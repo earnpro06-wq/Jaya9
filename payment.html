@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway - BET-BAJI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0b1120; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding-top: 20px; color: #fff; transition: 0.3s; }
+
+        .payment-container { width: 100%; max-width: 420px; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; border: 1px solid #334155; position: relative; }
+
+        .method-logo { width: 70px; height: 70px; margin-bottom: 10px; border-radius: 50%; object-fit: cover; border: 2px solid #ffcc00; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3)); }
+        .timer { color: #ffcc00; font-size: 18px; font-weight: bold; margin-bottom: 15px; display: block; }
+        
+        hr { border: none; border-top: 1px solid #334155; margin: 20px 0; }
+
+        .instruction-text { font-size: 14px; color: #94a3b8; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; }
+
+        .input-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; text-align: left; }
+        .input-group label { font-size: 13px; color: #ffcc00; font-weight: bold; flex: 1; }
+        .input-field-wrapper { position: relative; flex: 1.5; }
+        .input-field-wrapper input { width: 100%; padding: 12px; border: 1px solid #374151; border-radius: 6px; background: #111827; font-size: 14px; color: #fff; outline: none; font-weight: bold; }
+        .copy-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #ff6600; cursor: pointer; font-size: 16px; }
+
+        .trx-input-container { text-align: left; margin-bottom: 20px; }
+        .trx-input { width: 100%; padding: 14px; border: 1px solid #374151; border-radius: 6px; font-size: 15px; outline: none; background: #111827; color: #ffcc00; font-weight: bold; text-align: center; }
+        .trx-input::placeholder { color: #4b5563; font-size: 13px; font-weight: normal; }
+        .error-msg { color: #ff4d4d; font-size: 11px; margin-top: 5px; display: none; font-weight: bold; text-align: center; }
+
+        .confirm-btn { width: 100%; background: linear-gradient(180deg, #ff8c00 0%, #ff6600 100%); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 20px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3); transition: 0.3s; }
+        .confirm-btn:active { transform: scale(0.98); }
+        .confirm-btn:disabled { background: #4b5563; opacity: 0.6; box-shadow: none; cursor: not-allowed; filter: grayscale(1); }
+        
+        .how-to { text-align: left; background: rgba(255, 255, 255, 0.05); border: 1px solid #334155; padding: 15px; border-radius: 8px; font-size: 13px; color: #94a3b8; cursor: pointer; display: flex; align-items: center; }
+        .how-to i { margin-right: 10px; color: #ff6600; }
+
+        .secure-notice { margin-top: 25px; color: #4b5563; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        #loadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11, 17, 32, 0.9);
+            z-index: 2000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader-9 { width: 50px; height: 50px; border-radius: 50%; border: 4px solid transparent; border-top-color: #ffcc00; position: relative; animation: rotation 1s linear infinite; }
+        .loader-9:before { content: ""; position: absolute; top: 7px; left: 7px; right: 7px; bottom: 7px; border-radius: 50%; border: 4px solid transparent; border-top-color: #fff; animation: rotation 0.5s linear infinite reverse; }
+
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #iframeOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .iframe-container {
+            width: 90%;
+            max-width: 320px;
+            height: 285px;
+            background: #1e293b;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 102, 0, 0.1);
+            border: 1px solid #334155;
+            transform: scale(0.7);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        #iframeOverlay.show .iframe-container {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        #popIframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <div id="loadingOverlay">
+        <div class="loader-9"></div>
+        <p style="margin-top: 20px; color: #ffcc00; font-weight: bold; font-size: 14px;">অনুগ্রহ করে অপেক্ষা করুন...</p>
+    </div>
+
+    <div id="iframeOverlay" onclick="closeModal(event)">
+        <div class="iframe-container" id="container">
+            <iframe id="popIframe" src=""></iframe>
+        </div>
+    </div>
+
+    <div class="payment-container">
+        <img id="dynamicLogo" src="https://i.postimg.cc/Y2RLT0RR/images-(19).jpg" alt="Logo" class="method-logo">
+        
+        <span class="timer" id="displayTimer">সময়সীমা &nbsp; 10:00</span>
+        <hr>
+
+        <p class="instruction-text">টাকা পাঠানো হলে ট্রানজেকশন আইডি দিন</p>
+
+        <div class="input-group">
+            <label>ডিপোজিট পরিমাণ :</label>
+            <div class="input-field-wrapper">
+                <input type="text" id="depositAmt" value="৳ 0.00" readonly>
+                <i class="far fa-copy copy-icon" onclick="copyValue('depositAmt')"></i>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label id="methodLabel">বিকাশ পার্সোনাল :</label>
+            <div class="input-field-wrapper">
+                <input type="text" value="01823315281" id="personalNum" readonly>
+                <i class="far fa-copy copy-icon" onclick="copyValue('personalNum')"></i>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="trx-input-container">
+            <label style="font-size: 14px; font-weight: bold; color: #ffcc00; margin-bottom: 10px; display: block;">ট্রানজাকশন আইডি (TrxID) :</label>
+            <input type="text" class="trx-input" id="trxIdInput" maxlength="10" placeholder="এখানে ১০ ডিজিটের আইডি দিন">
+            <p id="trxError" class="error-msg"><i class="fas fa-exclamation-circle"></i> ১০ ডিজিটের সঠিক ট্রানজেকশন আইডি দিন!</p>
+        </div>
+
+        <button class="confirm-btn" id="submitBtn" onclick="submitPayment()" disabled>নিশ্চিত করুন</button>
+
+        <div class="how-to">
+            <i class="fas fa-info-circle"></i> উপরের নাম্বারে সেন্ড মানি করার পর TrxID দিন।
+        </div>
+
+        <div class="secure-notice">
+            <i class="fas fa-lock"></i> 256-bit Secure Encryption
+        </div>
+    </div>
+
+    <script>
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            var countdown = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                display.textContent = "সময়সীমা   " + minutes + ":" + seconds;
+                if (--timer < 0) {
+                    clearInterval(countdown);
+                    display.textContent = "সময় শেষ!";
+                    display.style.color = "#ff4444";
+                    document.getElementById('trxIdInput').disabled = true;
+                    document.getElementById('submitBtn').disabled = true;
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            var tenMinutes = 60 * 10,
+            display = document.querySelector('#displayTimer');
+            startTimer(tenMinutes, display);
+
+            const savedAmount = localStorage.getItem('selectedAmount') || "৳ 0.00";
+            const savedMethod = localStorage.getItem('selectedMethod') || "BKASH";
+            const savedLogo = localStorage.getItem('selectedLogo') || "https://i.postimg.cc/Y2RLT0RR/images-(19).jpg";
+
+            document.getElementById('depositAmt').value = savedAmount;
+            document.getElementById('methodLabel').innerText = savedMethod + " পার্সোনাল :";
+            document.getElementById('dynamicLogo').src = savedLogo;
+        };
+
+        const trxInput = document.getElementById('trxIdInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const trxError = document.getElementById('trxError');
+
+        trxInput.addEventListener('input', function() {
+            const val = this.value.trim();
+            if(val.length === 10) {
+                trxError.style.display = 'none';
+                submitBtn.disabled = false;
+            } else {
+                trxError.style.display = 'block';
+                submitBtn.disabled = true;
+            }
+        });
+
+        function copyValue(id) {
+            var copyText = document.getElementById(id);
+            navigator.clipboard.writeText(copyText.value);
+            alert("কপি হয়েছে: " + copyText.value);
+        }
+
+        function submitPayment() {
+            const val = trxInput.value.trim();
+            if(val.length === 10) {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                const overlay = document.getElementById('iframeOverlay');
+                const iframe = document.getElementById('popIframe');
+                
+                loadingOverlay.style.display = 'flex';
+                
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                    iframe.src = "pod.html";
+                    overlay.style.display = "flex";
+                    setTimeout(() => {
+                        overlay.classList.add('show');
+                    }, 50);
+                }, 2000);
+            }
+        }
+
+        function closeModal(event) {
+            if (event.target.id === "iframeOverlay") {
+                const overlay = document.getElementById('iframeOverlay');
+                overlay.classList.remove('show');
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                    document.getElementById('popIframe').src = "";
+                }, 300);
+            }
+        }
+    </script>
+</body>
+</html>

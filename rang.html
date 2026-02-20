@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaya Rank Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+
+        body {
+            background-color: #2c3e50;
+            color: white;
+            max-width: 500px;
+            margin: 0 auto;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background-color: #3b3091;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rank-container {
+            background: linear-gradient(135deg, #1d332a, #111);
+            margin: 15px;
+            padding: 30px 20px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid #27ae60;
+        }
+
+        .rank-title {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .progress-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+        }
+
+        .rank-badge {
+            background-color: #7f8c8d;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .progress-bar-container {
+            flex-grow: 1;
+            height: 15px;
+            background-color: #333;
+            border-radius: 10px;
+            margin-left: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            width: 90%;
+            height: 100%;
+            background: linear-gradient(to right, #f1c40f, #f39c12);
+        }
+
+        .progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: #000;
+            line-height: 15px;
+        }
+
+        .claim-btn {
+            background-color: #444;
+            color: #777;
+            border: none;
+            padding: 10px 40px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: not-allowed;
+        }
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 10px;
+            background-color: rgba(0,0,0,0.5);
+            margin: 0 10px;
+        }
+
+        .reward-card {
+            background-color: #1a1a1a;
+            padding: 10px 5px;
+            text-align: center;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .reward-card.active {
+            background-color: #333;
+            border-top: 3px solid #f1c40f;
+        }
+
+        .reward-badge {
+            background-color: #95a5a6;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .reward-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .free-label {
+            font-size: 10px;
+            color: #ccc;
+        }
+
+        .reward-amount {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .threshold-amount {
+            font-size: 11px;
+            color: #fff;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .page-num {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #222;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .page-num.active {
+            background-color: #1a237e;
+        }
+
+        .footer-info {
+            padding: 20px;
+            background-color: #e0e0e0;
+            color: #333;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 500px;
+            background-color: #3b3091;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            color: white;
+            font-size: 11px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <span>☰</span>
+        <h2 style="font-style: italic;">JAYA9</h2>
+        <span>✉</span>
+    </div>
+
+    <div class="rank-container">
+        <div class="rank-title">JAYA RANK</div>
+        <div class="welcome-text">Welcome Back, M</div>
+        
+        <div class="progress-wrapper">
+            <div class="rank-badge">24</div>
+            <div class="progress-bar-container">
+                <div class="progress-fill"></div>
+                <div class="progress-text">42891 / 44800</div>
+            </div>
+        </div>
+
+        <button class="claim-btn">Claim Rewards</button>
+    </div>
+
+    <div class="rewards-grid">
+        <div class="reward-card">
+            <div class="reward-badge">7</div>
+            <div class="reward-icon">💰</div>
+            <div class="free-label">FREE</div>
+            <div class="reward-amount">৳15</div>
+            <div class="threshold-amount">৳3900</div>
+        </div>
+        <div class="reward-card">
+            <div class="reward-badge">8</div>
+            <div class="reward-icon">💰</div>
+            <div class="free-label">FREE</div>
+            <div class="reward-amount">৳15</div>
+            <div class="threshold-amount">৳4700</div>
+        </div>
+        <div class="reward-card">
+            <div class="reward-badge">9</div>
+            <div class="reward-icon">💰</div>
+            <div class="free-label">FREE</div>
+            <div class="reward-amount">৳50</div>
+            <div class="threshold-amount">৳5500</div>
+        </div>
+        <div class="reward-card">
+            <div class="reward-badge">10</div>
+            <div class="reward-icon">💰</div>
+            <div class="free-label">FREE</div>
+            <div class="reward-amount">৳15</div>
+            <div class="threshold-amount">৳6300</div>
+        </div>
+    </div>
+
+    <div class="pagination">
+        <div class="page-num"> &lt; </div>
+        <div class="page-num active">1</div>
+        <div class="page-num">2</div>
+        <div class="page-num">3</div>
+        <div class="page-num">4</div>
+        <div class="page-num">...</div>
+        <div class="page-num">8</div>
+        <div class="page-num">9</div>
+        <div class="page-num">10</div>
+        <div class="page-num"> &gt; </div>
+    </div>
+
+    <div class="footer-info">
+        <div><strong>Payment Methods</strong><br>🏦</div>
+        <div><strong>Customer Support</strong><br>🎧 Chat Now</div>
+    </div>
+
+    <div class="nav-bar">
+        <div>🏠<br>Home</div>
+        <div>🔥<br>Promotion</div>
+        <div>💰<br>Deposit</div>
+        <div style="color: #ffc107;">👤<br>Profile</div>
+    </div>
+
+</body>
+</html>

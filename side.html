@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bet-Baji Menu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS অংশ */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        /* হোম পেজের ডার্ক কালারের সাথে মিল রাখা হয়েছে */
+        body { 
+            background-color: #0b1120; 
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Design - Dark Theme */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: #0b1120; /* আপনার হোম পেজের ব্যাকগ্রাউন্ড কালার */
+            z-index: 1000;
+            overflow-y: auto; /* স্ক্রল করার জন্য */
+        }
+
+        /* Sidebar Header */
+        .sidebar-header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            padding: 20px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+        }
+
+        .sidebar-header .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffcc00; 
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        /* Menu Items - বড় করা হয়েছে স্ক্রল করার জন্য */
+        .menu-list { padding: 10px 0; }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 22px 20px; /* প্যাডিং বাড়ানো হয়েছে লেখা বড় দেখানোর জন্য */
+            text-decoration: none;
+            color: #94a3b8; /* হালকা ধূসর টেক্সট */
+            font-weight: 500;
+            font-size: 17px; /* ফন্ট সাইজ বাড়ানো হয়েছে */
+            border-bottom: 1px solid #1e293b;
+            transition: 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .menu-item:active { background-color: #1e293b; color: #fff; }
+
+        .menu-item i {
+            width: 35px;
+            font-size: 20px;
+            margin-right: 15px;
+            text-align: center;
+            color: #f39c12; /* আইকন কালার গোল্ডেন */
+        }
+
+        /* Active State */
+        .menu-item.active {
+            background-color: #1e293b;
+            color: #ffcc00;
+            border-left: 4px solid #ff6600;
+        }
+
+        /* New Badge */
+        .badge-new {
+            background: #ff0000;
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        /* Language Flag */
+        .flag-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: url('https://flagcdn.com/w40/bd.png') no-repeat center;
+            background-size: cover;
+            margin-right: 15px;
+        }
+
+        .close-btn {
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">BET-BAJI</div>
+            <i class="fas fa-times close-btn" onclick="parent.closeSideMenu()"></i>
+        </div>
+
+        <div class="menu-list">
+            <a href="#" class="menu-item active"><i class="fas fa-home"></i> Home</a>
+            <a href="#" class="menu-item"><i class="fas fa-baseball-bat-ball"></i> Cricket</a>
+            <a href="#" class="menu-item"><i class="fas fa-dice"></i> Live casino</a>
+            <a href="#" class="menu-item"><i class="fas fa-dice-five"></i> Slot games</a>
+            <a href="#" class="menu-item"><i class="fas fa-table-cells"></i> Table Games</a>
+            <a href="#" class="menu-item"><i class="fas fa-volleyball"></i> Sportsbook</a>
+            <a href="#" class="menu-item"><i class="fas fa-fish"></i> Fishing</a>
+            <a href="#" class="menu-item"><i class="fas fa-plane-departure"></i> Crash</a>
+            <a href="#" class="menu-item"><i class="fas fa-percentage"></i> Promotion</a>
+            <a href="#" class="menu-item"><i class="fas fa-users"></i> Referral</a>
+            <a href="#" class="menu-item"><i class="fas fa-trophy"></i> Bet-Baji Rank <span class="badge-new">NEW</span></a>
+            <a href="#" class="menu-item" style="color: #ff4444;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="#" class="menu-item" style="color: #cbd5e1;"><div class="flag-icon"></div> Language</a>
+        </div>
+    </div>
+
+</body>
+</html>

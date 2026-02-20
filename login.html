@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - JAYA9</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .login-box {
+            background: #111827;
+            width: 90%;
+            max-width: 350px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 1px solid #2d3748;
+        }
+
+        .login-header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            color: #ffcc00;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .close-btn { cursor: pointer; font-size: 20px; color: #fff; }
+
+        .login-form { padding: 25px; }
+
+        .input-group { margin-bottom: 20px; position: relative; }
+
+        .label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .label span { color: #ff6600; }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-container i {
+            position: absolute;
+            left: 12px;
+            color: #ffcc00;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+            color: #fff;
+            transition: 0.3s;
+        }
+
+        .input-container input:focus {
+            border-color: #ff6600;
+            box-shadow: 0 0 8px rgba(255, 102, 0, 0.2);
+        }
+
+        .input-container input::placeholder { color: #4b5563; }
+
+        .error-text {
+            color: #ef4444;
+            font-size: 11px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .forgot-pass {
+            text-align: right;
+            display: block;
+            font-size: 13px;
+            color: #ffcc00;
+            text-decoration: none;
+            margin-bottom: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            outline: none;
+        }
+
+        .login-submit {
+            width: 100%;
+            background: linear-gradient(to right, #ff0000, #ff6600);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+            transition: 0.3s;
+        }
+
+        .login-submit:active { transform: scale(0.98); }
+
+        .signup-text {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .signup-text span { color: #ff6600; font-weight: bold; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <div class="login-header">
+            Welcome To JAYA9
+            <i class="fas fa-times close-btn" onclick="window.parent.closeLogin()"></i>
+        </div>
+
+        <div class="login-form">
+            <form id="loginForm">
+                <div class="input-group">
+                    <label class="label">Username/Email <span>*</span></label>
+                    <div class="input-container">
+                        <i class="fas fa-user"></i>
+                        <input type="email" id="email" placeholder="Enter Email" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="label">Password <span>*</span></label>
+                    <div class="input-container">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Password" required>
+                    </div>
+                </div>
+
+                <div class="forgot-pass" onclick="openForgot()">Forgot Password?</div>
+
+                <button type="submit" class="login-submit" id="loginBtn">LOGIN NOW</button>
+
+                <p class="signup-text">Don’t have an account? <span onclick="window.parent.openSignup()">Sign Up</span></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openForgot() {
+            if (window.parent && window.parent.showLoader) {
+                window.parent.showLoader(() => {
+                    window.location.href = 'forgot.html';
+                });
+            } else {
+                window.location.href = 'forgot.html';
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-GSBF0PJDx8_AaFD0iyJiZMMsq8ORryE",
+            authDomain: "jaya9-54ae3.firebaseapp.com",
+            databaseURL: "https://jaya9-54ae3-default-rtdb.firebaseio.com",
+            projectId: "jaya9-54ae3",
+            storageBucket: "jaya9-54ae3.firebasestorage.app",
+            messagingSenderId: "645319696874",
+            appId: "1:645319696874:web:a664ff269a999add3d9293",
+            measurementId: "G-QEZETFRFS5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (window.parent && window.parent.closeLogin) {
+                    window.parent.closeLogin();
+                } else {
+                    window.location.replace('index.html');
+                }
+            }
+        });
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (window.parent && window.parent.showLoader) {
+                window.parent.showLoader(() => {
+                    handleLogin();
+                });
+            } else {
+                handleLogin();
+            }
+        });
+
+        function handleLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            loginBtn.innerText = "Logging in...";
+            loginBtn.disabled = true;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    if (window.parent && window.parent.onLoginSuccess) {
+                        window.parent.onLoginSuccess();
+                    }
+                })
+                .catch((error) => {
+                    loginBtn.innerText = "LOGIN NOW";
+                    loginBtn.disabled = false;
+                    alert("Error: " + error.message);
+                });
+        }
+    </script>
+</body>
+</html>

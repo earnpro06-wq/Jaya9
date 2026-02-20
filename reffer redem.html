@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Referral Program - BET-BAJI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0b1120;
+            color: #fff;
+            max-width: 500px;
+            margin: 0 auto;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ff6600;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header h2 {
+            color: #ffcc00;
+            font-style: italic;
+            font-weight: 900;
+            letter-spacing: 1px;
+            font-size: 20px;
+        }
+
+        .banner-container {
+            position: relative;
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(45deg, #1a1a4d, #000);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #1e293b;
+            overflow: hidden;
+        }
+
+        .banner-container::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,102,0,0.1) 0%, transparent 70%);
+            top: -50%;
+        }
+
+        .banner-overlay-content h3 {
+            font-size: 22px;
+            color: #ffcc00;
+            text-transform: uppercase;
+            font-weight: 900;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+            z-index: 1;
+        }
+
+        .tab-menu {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 15px;
+            z-index: 2;
+        }
+
+        .tab-icon-btn {
+            background-color: #111827;
+            border: 1px solid #334155;
+            padding: 8px 18px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #94a3b8;
+            transition: 0.3s;
+        }
+
+        .tab-icon-btn.active {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(255, 102, 0, 0.4);
+        }
+
+        .commission-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            margin: 20px 15px;
+            padding: 22px;
+            border-radius: 15px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .card-title {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .amount-display {
+            background-color: #020617;
+            color: #ffcc00;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 24px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            border: 1px solid #1e293b;
+        }
+
+        .redeem-btn {
+            background: linear-gradient(180deg, #ffcc00, #ff6600);
+            color: #000;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+            text-transform: uppercase;
+        }
+
+        .info-strip {
+            margin: 0 15px 12px;
+        }
+
+        .strip-label {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .strip-value {
+            background-color: #111827;
+            color: #f8fafc;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            border: 1px solid #1e293b;
+            display: flex;
+            justify-content: flex-start;
+            gap: 5px;
+        }
+
+        .tier-header {
+            display: flex;
+            margin-top: 8px;
+            gap: 10px;
+        }
+
+        .tier-box {
+            flex: 1;
+            background-color: #1e293b;
+            color: #ffcc00;
+            padding: 10px;
+            text-align: center;
+            font-weight: 900;
+            border-radius: 8px;
+            font-size: 14px;
+            border: 1px solid rgba(255,204,0,0.2);
+        }
+
+        .referral-tree {
+            text-align: center;
+            padding: 25px 0;
+            background: radial-gradient(circle, rgba(26,26,77,0.5) 0%, transparent 70%);
+        }
+
+        .user-node {
+            display: inline-block;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(45deg, #ffcc00, #ff6600);
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.4);
+        }
+
+        .user-tag {
+            background-color: #ff6600;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .count-badge {
+            background-color: #1e293b;
+            color: #ffcc00;
+            padding: 6px 25px;
+            border-radius: 20px;
+            border: 1px solid #ffcc00;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .arrow-down {
+            font-size: 18px;
+            color: #ff6600;
+            margin: 8px 0;
+        }
+
+        .qr-section {
+            background-color: #111827;
+            margin: 20px 15px;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #1e293b;
+        }
+
+        .qr-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #94a3b8;
+        }
+
+        .qr-placeholder {
+            width: 140px;
+            height: 140px;
+            background-color: #fff;
+            margin: 0 auto 20px;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        .qr-placeholder img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .share-btn {
+            background: linear-gradient(180deg, #ffcc00, #ff6600);
+            color: #000;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 10px;
+            flex: 1;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <i class="fas fa-bars"></i>
+        <h2>BET-BAJI</h2>
+        <i class="fas fa-envelope"></i>
+    </div>
+
+    <div class="banner-container">
+        <div class="banner-overlay-content">
+            <h3>Referral Program</h3>
+        </div>
+        <div class="tab-menu">
+            <div class="tab-icon-btn active"><i class="fas fa-chart-bar"></i> Summary</div>
+            <div class="tab-icon-btn"><i class="fas fa-file-alt"></i></div>
+            <div class="tab-icon-btn"><i class="fas fa-history"></i></div>
+        </div>
+    </div>
+
+    <div class="commission-card">
+        <div class="card-title">Commission To Redeem</div>
+        <div class="amount-display">
+            <span>৳ 0.00</span>
+        </div>
+        <button class="redeem-btn">Redeem Now</button>
+    </div>
+
+    <div class="info-strip">
+        <div class="strip-label">Today Commission</div>
+        <div class="strip-value"><span>৳</span> <span>0.00</span></div>
+    </div>
+
+    <div class="info-strip">
+        <div class="strip-label">This Month Commission</div>
+        <div class="strip-value"><span>৳</span> <span style="color: #4ade80;">93.86</span></div>
+    </div>
+
+    <div class="info-strip">
+        <div class="strip-label">Referral Tier</div>
+        <div class="tier-header">
+            <div class="tier-box">Total Members</div>
+            <div class="tier-box" style="background: #ff6600; color: #fff;">47</div>
+        </div>
+    </div>
+
+    <div class="referral-tree">
+        <div class="user-node">
+            <div class="avatar"><i class="fas fa-user"></i></div>
+            <div class="user-tag">mdsazzad</div>
+            <div><i class="fas fa-chevron-down arrow-down"></i></div>
+        </div>
+        <br>
+        <div class="user-node">
+            <div class="count-badge">42 Members</div>
+            <div><i class="fas fa-chevron-down arrow-down"></i></div>
+        </div>
+        <br>
+        <div class="user-node">
+            <div class="count-badge">5 Members</div>
+        </div>
+    </div>
+
+    <div class="qr-section">
+        <div class="qr-details">
+            <div>ID: <span style="color: #fff;">376583</span></div>
+            <div>CODE: <span style="color: #ffcc00;">GMBNWU7613</span></div>
+        </div>
+        <div class="qr-placeholder">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GMBNWU7613" alt="QR Code">
+        </div>
+        <button class="share-btn">
+            <i class="fas fa-share-nodes"></i> Share Now
+        </button>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-item"><i class="fas fa-home"></i>Home</div>
+        <div class="nav-item"><i class="fas fa-fire"></i>Promotion</div>
+        <div class="nav-item"><i class="fas fa-wallet"></i>Deposit</div>
+        <div class="nav-item active"><i class="fas fa-user"></i>Profile</div>
+    </div>
+
+</body>
+</html>

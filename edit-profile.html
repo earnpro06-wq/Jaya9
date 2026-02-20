@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Edit Profile Modal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: #111827;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .modal-container {
+            background-color: #111827;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            color: #ffcc00;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+            border-bottom: 1px solid #1e293b;
+            flex-shrink: 0;
+        }
+
+        .close-btn {
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 2px 5px;
+            line-height: 1;
+        }
+
+        .modal-body {
+            padding: 12px 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .modal-body::-webkit-scrollbar { display: none; }
+
+        .form-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .label {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+            color: #94a3b8;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .label span {
+            color: #ff6600;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            outline: none;
+            font-size: 15px; 
+            font-weight: bold;
+            background-color: #1f2937;
+            color: #ffcc00;
+            appearance: none;
+            transition: 0.3s;
+        }
+
+        #edit-dob {
+            width: 65%;
+            border: 1px solid #334155;
+            cursor: pointer;
+            color: #ffcc00;
+        }
+
+        .input-field:focus {
+            border-color: #ff6600;
+        }
+
+        .input-error {
+            border-color: #ff4d4d !important;
+        }
+
+        .readonly-field {
+            background-color: #0b1120 !important;
+            border: 1px solid #1e293b;
+            color: #ffcc00 !important;
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 10px;
+            margin-top: 5px;
+            display: none;
+            font-weight: bold;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .submit-btn:disabled {
+            background-color: #ff6600;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .spin-yin-yang {
+            animation: spin 1s linear infinite;
+            font-size: 16px;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-container">
+        <div class="modal-header">
+            <span>EDIT PROFILE</span>
+            <div class="close-btn" onclick="closeParentModal()">✕</div>
+        </div>
+
+        <div class="modal-body">
+            <div class="form-content">
+                <div class="form-group">
+                    <label class="label">Email <span>*</span></label>
+                    <input type="text" id="edit-email" class="input-field readonly-field" readonly placeholder="Not Set">
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Username <span>*</span></label>
+                    <input type="text" id="edit-username" class="input-field readonly-field" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Date Of Birth <span>*</span></label>
+                    <input type="date" id="edit-dob" class="input-field">
+                    <p id="dob-error" class="error-msg">⚠️ Please select your date of birth!</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Phone Number <span>*</span></label>
+                    <input type="text" id="edit-phone" class="input-field readonly-field" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Fullname <span>*</span></label>
+                    <input type="text" id="edit-fullname" class="input-field" placeholder="Enter full name" maxlength="16">
+                    <p id="fullname-error" class="error-msg">⚠️ Full name is required (Max 16 chars)!</p>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="update-btn">
+                <span id="btn-text">SUBMIT</span>
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-GSBF0PJDx8_AaFD0iyJiZMMsq8ORryE",
+            authDomain: "jaya9-54ae3.firebaseapp.com",
+            databaseURL: "https://jaya9-54ae3-default-rtdb.firebaseio.com",
+            projectId: "jaya9-54ae3",
+            storageBucket: "jaya9-54ae3.firebasestorage.app",
+            messagingSenderId: "645319696874",
+            appId: "1:645319696874:web:a664ff269a999add3d9293",
+            measurementId: "G-QEZETFRFS5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUid = null;
+
+        const nameInp = document.getElementById('edit-fullname');
+        nameInp.addEventListener('input', function() {
+            if (this.value.length > 16) {
+                this.value = this.value.slice(0, 16);
+            }
+        });
+
+        function checkLock(data) {
+            if (data.fullname && data.dob && data.fullname !== "" && data.dob !== "") {
+                document.getElementById('edit-dob').disabled = true;
+                document.getElementById('edit-fullname').disabled = true;
+                document.getElementById('edit-dob').classList.add('readonly-field');
+                document.getElementById('edit-fullname').classList.add('readonly-field');
+                document.getElementById('update-btn').disabled = true;
+                document.getElementById('update-btn').innerText = "SUBMITTED";
+            }
+        }
+
+        function fillFields(data) {
+            if (!data) return;
+            document.getElementById('edit-email').value = data.email || "";
+            document.getElementById('edit-username').value = data.username || "";
+            document.getElementById('edit-phone').value = data.phone || "";
+            document.getElementById('edit-dob').value = data.dob || "";
+            document.getElementById('edit-fullname').value = data.fullname || "";
+            checkLock(data);
+        }
+
+        const localData = localStorage.getItem('user_profile_data');
+        if (localData) fillFields(JSON.parse(localData));
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUid = user.uid;
+                const userRef = ref(db, 'users/' + user.uid);
+                get(userRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        fillFields(data);
+                        localStorage.setItem('user_profile_data', JSON.stringify(data));
+                    }
+                });
+            }
+        });
+
+        document.getElementById('update-btn').onclick = function() {
+            if (!currentUid || this.disabled) return;
+
+            const dobInp = document.getElementById('edit-dob');
+            const dobError = document.getElementById('dob-error');
+            const nameError = document.getElementById('fullname-error');
+            const btnText = document.getElementById('btn-text');
+
+            let hasError = false;
+
+            if (!dobInp.value) {
+                dobError.style.display = "block";
+                dobInp.classList.add('input-error');
+                hasError = true;
+            } else {
+                dobError.style.display = "none";
+                dobInp.classList.remove('input-error');
+            }
+
+            if (!nameInp.value.trim()) {
+                nameError.style.display = "block";
+                nameInp.classList.add('input-error');
+                hasError = true;
+            } else {
+                nameError.style.display = "none";
+                nameInp.classList.remove('input-error');
+            }
+
+            if (hasError) return;
+
+            const dob = dobInp.value;
+            const fullname = nameInp.value.trim();
+
+            this.disabled = true;
+            btnText.innerHTML = '<i class="fas fa-yin-yang spin-yin-yang"></i> PROCESSING...';
+
+            const updateData = {
+                dob: dob,
+                fullname: fullname
+            };
+
+            setTimeout(() => {
+                update(ref(db, 'users/' + currentUid), updateData).then(() => {
+                    const cachedData = JSON.parse(localStorage.getItem('user_profile_data') || '{}');
+                    const newData = { ...cachedData, ...updateData };
+                    localStorage.setItem('user_profile_data', JSON.stringify(newData));
+                    closeParentModal();
+                }).catch(() => {
+                    this.disabled = false;
+                    btnText.innerText = "SUBMIT";
+                });
+            }, 2000);
+        };
+
+        window.closeParentModal = function() {
+            if (window.parent && window.parent.closeEditModal) {
+                window.parent.closeEditModal();
+            }
+        };
+    </script>
+</body>
+</html>

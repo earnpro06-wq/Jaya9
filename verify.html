@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Profile Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: #111827;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .modal-box {
+            background: #111827;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            color: #ffcc00;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            border-bottom: 1px solid #1e293b;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .close-btn {
+            font-size: 18px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+
+        .input-group {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            color: #94a3b8;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .input-label span {
+            color: #ff6600;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            outline: none;
+            font-size: 14px;
+            background-color: #1f2937;
+            color: #ffcc00;
+        }
+
+        .input-field:focus {
+            border-color: #ff6600;
+        }
+
+        .captcha-row, .phone-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .captcha-code {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            color: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            border: 1px solid #1e293b;
+            cursor: pointer;
+            min-width: 120px;
+            user-select: none;
+        }
+
+        .refresh-icon {
+            color: #ffcc00;
+            font-size: 18px;
+            display: inline-block;
+        }
+
+        .rotating {
+            animation: spin 0.5s linear;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .error-text {
+            color: #ff4d4d;
+            font-size: 10px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .readonly-input {
+            background-color: #0b1120;
+            border: 1px solid #1e293b;
+            color: #64748b;
+        }
+
+        .otp-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .otp-inputs {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+        }
+
+        .otp-box {
+            width: 45px;
+            height: 50px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            color: #ffcc00;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .otp-box:focus {
+            border-color: #ff6600;
+        }
+
+        .request-otp-btn {
+            background-color: #ff6600;
+            border: none;
+            color: white;
+            padding: 12px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            white-space: nowrap;
+            min-width: 100px;
+            transition: 0.3s;
+            height: 45px;
+        }
+
+        .request-otp-btn:disabled {
+            background-color: #374151;
+            cursor: not-allowed;
+        }
+
+        .timer-active {
+            background-color: #ff8c00 !important;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 50px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+            text-transform: uppercase;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .spin-normal {
+            animation: spin-icon 2s linear infinite;
+        }
+
+        @keyframes spin-icon {
+            100% { transform: rotate(360deg); }
+        }
+
+        @media screen and (max-width: 480px) {
+            .otp-box {
+                width: 40px;
+                height: 45px;
+            }
+            .request-otp-btn {
+                min-width: 90px;
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-box">
+        <div class="modal-header">
+            <span>Verify Phone Number</span>
+            <div class="close-btn" onclick="handleManualClose()">✕</div>
+        </div>
+        <div class="modal-body">
+            
+            <div class="input-group">
+                <label class="input-label">Verification Code <span>*</span></label>
+                <div class="captcha-row">
+                    <input type="text" id="captcha-input" class="input-field" placeholder="Enter code" inputmode="numeric">
+                    <div class="captcha-code" onclick="generateCaptcha()">
+                        <div id="captcha-text">....</div>
+                        <i id="refresh-icon" class="fas fa-sync-alt refresh-icon"></i>
+                    </div>
+                </div>
+                <p id="captcha-error" class="error-text">Invalid verification code</p>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">First Phone Number <span>*</span></label>
+                <div class="phone-row">
+                    <input type="text" id="db-phone" class="input-field readonly-input" value="Loading..." readonly>
+                    <button id="otp-btn" class="request-otp-btn" onclick="requestOTP()">Request OTP</button>
+                </div>
+                <p id="send-error" class="error-text">Send failed</p>
+            </div>
+
+            <div class="otp-section">
+                <label class="input-label">OTP Code <span>*</span></label>
+                <div class="otp-inputs">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+                </div>
+                <p id="otp-error" class="error-text">Invalid OTP code</p>
+            </div>
+
+            <button id="submit-btn" class="submit-btn" onclick="handleSubmit()">
+                <span id="btn-text">Submit</span>
+            </button>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, set, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-GSBF0PJDx8_AaFD0iyJiZMMsq8ORryE",
+            authDomain: "jaya9-54ae3.firebaseapp.com",
+            databaseURL: "https://jaya9-54ae3-default-rtdb.firebaseio.com",
+            projectId: "jaya9-54ae3",
+            storageBucket: "jaya9-54ae3.firebasestorage.app",
+            messagingSenderId: "645319696874",
+            appId: "1:645319696874:web:a664ff269a999add3d9293",
+            measurementId: "G-QEZETFRFS5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const textBeeApiKey = "b4ac57d4-35a0-4dd4-a004-03e19fb0954a";
+        const deviceId = "698ec37b86ec1ea03120152b";
+
+        let currentUser = null;
+        let countdownTimer = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                const userRef = ref(db, 'users/' + user.uid);
+                
+                onValue(userRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        if (data.phone) {
+                            document.getElementById('db-phone').value = data.phone;
+                        }
+                    }
+                });
+                checkPersistentTimer();
+                restoreOTPInputs();
+            } else {
+                window.top.location.href = "index.html";
+            }
+        });
+
+        const boxes = document.querySelectorAll('.otp-box');
+        boxes.forEach((box, index) => {
+            box.addEventListener('input', (e) => {
+                saveOTPInputs();
+                if (e.target.value.length === 1 && index < boxes.length - 1) {
+                    boxes[index + 1].focus();
+                }
+            });
+            box.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    boxes[index - 1].focus();
+                }
+            });
+        });
+
+        function saveOTPInputs() {
+            let values = Array.from(boxes).map(box => box.value);
+            localStorage.setItem('temp_otp_data', JSON.stringify(values));
+        }
+
+        function restoreOTPInputs() {
+            const saved = localStorage.getItem('temp_otp_data');
+            if (saved) {
+                const values = JSON.parse(saved);
+                boxes.forEach((box, i) => box.value = values[i] || "");
+            }
+        }
+
+        function checkPersistentTimer() {
+            const expiry = localStorage.getItem('otpExpiry');
+            if (expiry) {
+                const now = Date.now();
+                const timeLeft = Math.floor((expiry - now) / 1000);
+                if (timeLeft > 0) {
+                    startTimer(document.getElementById('otp-btn'), timeLeft);
+                } else {
+                    localStorage.removeItem('otpExpiry');
+                }
+            }
+        }
+
+        window.requestOTP = async function() {
+            const rawPhone = document.getElementById('db-phone').value;
+            const btn = document.getElementById('otp-btn');
+            const sendError = document.getElementById('send-error');
+            const captchaInput = document.getElementById('captcha-input');
+            const captchaText = document.getElementById('captcha-text').innerText;
+            const cError = document.getElementById('captcha-error');
+
+            sendError.style.display = "none";
+            cError.style.display = "none";
+
+            if (captchaInput.value.trim() !== captchaText) {
+                cError.innerText = captchaInput.value.trim() === "" ? "Captcha cannot be empty!" : "Invalid Captcha! Please try again.";
+                cError.style.display = "block";
+                captchaInput.focus();
+                return;
+            }
+
+            if (!currentUser || rawPhone === "Loading..." || rawPhone === "No Number Found") return;
+
+            let phone = rawPhone.trim();
+            if (!phone.startsWith('+')) {
+                phone = phone.startsWith('0') ? "+88" + phone : "+880" + phone;
+            }
+
+            try {
+                btn.disabled = true;
+                btn.innerText = "SENDING...";
+
+                const otpCode = Math.floor(100000 + Math.random() * 900000);
+                const expiryTime = Date.now() + (2 * 60 * 1000);
+
+                const response = await fetch(`https://api.textbee.dev/api/v1/gateway/devices/${deviceId}/send-sms`, {
+                    method: 'POST',
+                    headers: { 'x-api-key': textBeeApiKey, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        recipients: [phone], 
+                        message: `Your OTP code is: ${otpCode}. Valid for 2 minutes. @jaya9-54ae3.firebaseapp.com #${otpCode}`,
+                        simSubscriptionId: 0 
+                    })
+                });
+
+                if (response.ok) {
+                    await set(ref(db, 'otps/' + currentUser.uid), { code: otpCode, expires: expiryTime });
+                    localStorage.setItem('otpExpiry', expiryTime);
+                    sendError.innerText = "Success! OTP Sent.";
+                    sendError.style.color = "#4ade80";
+                    sendError.style.display = "block";
+                    startTimer(btn, 120);
+                } else {
+                    throw new Error("Failed");
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.innerText = "Request OTP";
+                sendError.innerText = "Request Failed!";
+                sendError.style.color = "#ff4d4d";
+                sendError.style.display = "block";
+            }
+        };
+
+        function startTimer(btn, seconds) {
+            clearInterval(countdownTimer);
+            btn.classList.add('timer-active');
+            btn.disabled = true;
+
+            countdownTimer = setInterval(() => {
+                seconds--;
+                btn.innerText = `SENT (${seconds}s)`;
+                if (seconds <= 0) {
+                    clearInterval(countdownTimer);
+                    btn.disabled = false;
+                    btn.innerText = "Request OTP";
+                    btn.classList.remove('timer-active');
+                    localStorage.removeItem('otpExpiry');
+                    document.getElementById('send-error').style.display = "none";
+                }
+            }, 1000);
+        }
+
+        window.handleSubmit = async function() {
+            const oError = document.getElementById('otp-error');
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const captchaInput = document.getElementById('captcha-input');
+            const captchaText = document.getElementById('captcha-text').innerText;
+            const cError = document.getElementById('captcha-error');
+
+            oError.style.display = "none";
+            cError.style.display = "none";
+
+            if (captchaInput.value.trim() !== captchaText) {
+                cError.innerText = captchaInput.value.trim() === "" ? "Captcha cannot be empty!" : "Invalid Captcha! Please try again.";
+                cError.style.display = "block";
+                captchaInput.focus();
+                return;
+            }
+
+            let otpValue = "";
+            boxes.forEach(box => otpValue += box.value);
+
+            if (otpValue.length < 6) {
+                oError.innerText = "Please enter 6-digit OTP";
+                oError.style.display = "block";
+                return;
+            }
+
+            submitBtn.disabled = true;
+            btnText.innerHTML = '<i class="fas fa-sun spin-normal" style="color: #ffaa00; font-size: 18px;"></i> PROCESSING...';
+
+            if (currentUser) {
+                const startTime = Date.now();
+                const otpRef = ref(db, 'otps/' + currentUser.uid);
+                
+                try {
+                    const snapshot = await get(otpRef);
+                    const data = snapshot.val();
+
+                    const elapsedTime = Date.now() - startTime;
+                    const remainingWait = Math.max(0, 2000 - elapsedTime);
+
+                    setTimeout(async () => {
+                        if (data) {
+                            if (Date.now() > data.expires) {
+                                oError.innerText = "OTP expired. Request again.";
+                                oError.style.display = "block";
+                                resetSubmitBtn();
+                            } else if (otpValue == data.code) {
+                                await update(ref(db, 'users/' + currentUser.uid), { isVerified: true });
+                                localStorage.removeItem('otpExpiry');
+                                localStorage.removeItem('temp_otp_data');
+                                
+                                // সাজ্জাদ, এখানে সাবমিট সফল হলে আইফ্রেমটি হাইড হয়ে যাবে।
+                                window.parent.closeVerifyModal();
+                            } else {
+                                oError.innerText = "Invalid OTP code";
+                                oError.style.display = "block";
+                                resetSubmitBtn();
+                            }
+                        } else {
+                            oError.innerText = "Request OTP first";
+                            oError.style.display = "block";
+                            resetSubmitBtn();
+                        }
+                    }, remainingWait);
+
+                } catch (e) {
+                    oError.innerText = "Connection error. Try again.";
+                    oError.style.display = "block";
+                    resetSubmitBtn();
+                }
+            }
+        };
+
+        function resetSubmitBtn() {
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            submitBtn.disabled = false;
+            btnText.innerHTML = "Submit";
+        }
+    </script>
+
+    <script>
+        function generateCaptcha() {
+            const icon = document.getElementById('refresh-icon');
+            const input = document.getElementById('captcha-input');
+            icon.classList.add('rotating');
+            setTimeout(() => {
+                const randomCode = Math.floor(1000 + Math.random() * 9000);
+                document.getElementById('captcha-text').innerText = randomCode;
+                input.value = ""; 
+                icon.classList.remove('rotating');
+            }, 500);
+        }
+
+        function handleManualClose() { window.parent.closeVerifyModal(); }
+        window.onload = generateCaptcha;
+    </script>
+
+</body>
+</html>

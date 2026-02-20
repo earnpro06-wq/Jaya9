@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Deposit - BET-BAJI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0b1120; color: #fff; overflow-x: hidden; padding-top: 10px; transition: opacity 0.5s ease; }
+        
+        body.modal-open { overflow: hidden; }
+        .fade-out { opacity: 0.5; pointer-events: none; }
+
+        .wallet-info { background: #1e293b; padding: 15px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; margin-bottom: 5px; }
+        .refresh-icon { color: #ffcc00; margin-left: 8px; cursor: pointer; transition: transform 0.5s ease; }
+        .refresh-anim { transform: rotate(360deg); }
+
+        .section-title { border-left: 4px solid #ff6600; padding-left: 10px; margin: 15px 10px; font-weight: bold; font-size: 13px; color: #ffcc00; text-transform: uppercase; }
+
+        .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 10px; }
+        .method-card { background: #1f2937; border-radius: 8px; padding: 10px 4px; text-align: center; border: 1px solid #374151; position: relative; cursor: pointer; transition: 0.2s; }
+        .method-card img { width: 32px; height: 32px; object-fit: cover; border-radius: 5px; margin-bottom: 5px; }
+        .method-card span { display: block; font-size: 9px; font-weight: bold; color: #94a3b8; }
+        .active-method { border: 2px solid #ff6600; background: #2d3748; }
+        .active-method span { color: #fff; }
+        .bonus-tag { position: absolute; top: -5px; right: -2px; background: linear-gradient(to right, #ff0000, #ff6600); color: white; font-size: 8px; padding: 1px 4px; border-radius: 4px; font-weight: bold; z-index: 10; }
+
+        .channel-container { display: flex; gap: 10px; padding: 0 10px; }
+        .channel-card { flex: 1; background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-size: 12px; color: #94a3b8; font-weight: bold; cursor: pointer; text-align: center; transition: 0.2s; }
+        .active-channel { background: #ff6600; color: white; border-color: #ff6600; }
+
+        .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0 10px; margin-top: 10px; }
+        .amount-btn { background: #1e293b; border: 1px solid #374151; color: #fff; padding: 10px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .amount-btn:active { background: #ff6600; }
+
+        .input-box { margin: 15px 10px; }
+        .input-box input { width: 100%; padding: 12px; border: 1px solid #374151; border-radius: 8px; background: #111827; color: #ffcc00; outline: none; font-size: 16px; font-weight: bold; }
+        .limit-text { font-size: 10px; color: #94a3b8; margin-top: 6px; display: flex; align-items: center; gap: 5px; }
+        .error-msg { color: #ff4d4d; font-size: 11px; margin-top: 5px; display: none; font-weight: bold; }
+
+        .bonus-select { margin: 0 10px; }
+        .bonus-select select { width: 100%; padding: 12px; border: 1px solid #374151; border-radius: 8px; background: #111827; color: #fff; outline: none; }
+
+        .deposit-btn { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            width: calc(100% - 20px); 
+            margin: 20px 10px 40px 10px; 
+            background: linear-gradient(180deg, #ff8c00 0%, #ff6600 100%); 
+            color: white; 
+            border: none; 
+            padding: 14px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            font-size: 15px; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: 0.3s; 
+            height: 50px;
+        }
+        .deposit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .btn-loader {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: #fff;
+            position: relative;
+            animation: btnRotation 1s linear infinite;
+        }
+        .btn-loader:before {
+            content: "";
+            position: absolute;
+            top: 3px; left: 3px; right: 3px; bottom: 3px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: #ffcc00;
+            animation: btnRotation 0.5s linear infinite reverse;
+        }
+
+        @keyframes btnRotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #iframeModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .modal-container { 
+            width: 90%; 
+            max-width: 350px; 
+            height: 350px; 
+            background: #0b1120; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            position: relative; 
+            border: 1px solid #ff6600; 
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.3); 
+            transform: scale(0.7);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        #iframeModal.show .modal-container {
+            transform: scale(1);
+            opacity: 1;
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <div class="wallet-info">
+        <span>Main Wallet <i class="fas fa-sync-alt refresh-icon" id="refreshBalance"></i></span>
+        <span style="color: #ffcc00; font-weight: bold; font-size: 16px;">৳ 0.12</span>
+    </div>
+
+    <div class="section-title">Payment Methods</div>
+    <div class="grid-container">
+        <div class="method-card active-method">
+            <div class="bonus-tag">+ 3.0 %</div>
+            <img src="https://i.postimg.cc/Y2RLT0RR/images-(19).jpg" alt="Bkash">
+            <span>BKASH</span>
+        </div>
+        <div class="method-card">
+            <div class="bonus-tag">+ 3.0 %</div>
+            <img src="https://i.postimg.cc/cLgKKmWG/images-(18).jpg" alt="Nagad">
+            <span>NAGAD</span>
+        </div>
+        <div class="method-card">
+            <div class="bonus-tag">+ 3.0 %</div>
+            <img src="https://i.postimg.cc/pLwmKFVh/images-(11).png" alt="Rocket">
+            <span>ROCKET</span>
+        </div>
+        <div class="method-card">
+            <div class="bonus-tag">+ 3.0 %</div>
+            <img src="https://i.postimg.cc/hjgh5RdF/images-(12).png" alt="Upay">
+            <span>UPAY</span>
+        </div>
+    </div>
+
+    <div class="section-title">Deposit Channel</div>
+    <div class="channel-container">
+        <div class="channel-card active-channel" onclick="selectChannel(this)">PAYBANGLA</div>
+        <div class="channel-card" onclick="selectChannel(this)">SPEEDPAY</div>
+    </div>
+
+    <div class="section-title">Amount</div>
+    <div class="amount-grid">
+        <button class="amount-btn">200</button>
+        <button class="amount-btn">500</button>
+        <button class="amount-btn">1000</button>
+        <button class="amount-btn">2000</button>
+        <button class="amount-btn">10000</button>
+        <button class="amount-btn">20000</button>
+    </div>
+
+    <div class="input-box">
+        <input type="text" id="depositAmount" placeholder="৳ Min 200.00 - Max 30,000.00">
+        <p id="errorMsg" class="error-msg"><i class="fas fa-exclamation-triangle"></i> Min amount ৳ 200.00</p>
+        <p class="limit-text" id="limitText"><i class="fas fa-info-circle"></i> Min ৳ 200.00 - Max ৳ 30,000.00</p>
+    </div>
+
+    <div class="section-title">Deposit Bonus</div>
+    <div class="bonus-select">
+        <select id="bonusSelect">
+            <option>No Bonus</option>
+            <option>Welcome Bonus 100%</option>
+            <option>Daily Refill Bonus 10%</option>
+        </select>
+    </div>
+
+    <button class="deposit-btn" id="nextBtn" disabled>
+        <span id="btnText">DEPOSIT NOW</span>
+        <div class="btn-loader" id="btnLoader"></div>
+    </button>
+
+    <div id="iframeModal">
+        <div class="modal-container">
+            <iframe id="popFrame" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        const amountBtns = document.querySelectorAll('.amount-btn');
+        const inputField = document.getElementById('depositAmount');
+        const prefix = "৳ ";
+        const nextBtn = document.getElementById('nextBtn');
+        const btnText = document.getElementById('btnText');
+        const btnLoader = document.getElementById('btnLoader');
+        const iframeModal = document.getElementById('iframeModal');
+        const popFrame = document.getElementById('popFrame');
+        const refreshBtn = document.getElementById('refreshBalance');
+        const errorMsg = document.getElementById('errorMsg');
+        const limitText = document.getElementById('limitText');
+
+        function validateAmount() {
+            let numeric = inputField.value.replace(/[^0-9]/g, "");
+            let amount = parseInt(numeric);
+
+            if (!amount || amount < 200) {
+                errorMsg.style.display = 'block';
+                limitText.style.display = 'none';
+                nextBtn.disabled = true;
+            } else {
+                errorMsg.style.display = 'none';
+                limitText.style.display = 'flex';
+                nextBtn.disabled = false;
+            }
+        }
+
+        refreshBtn.addEventListener('click', () => {
+            refreshBtn.classList.add('refresh-anim');
+            setTimeout(() => { refreshBtn.classList.remove('refresh-anim'); }, 500);
+        });
+
+        amountBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                inputField.value = prefix + btn.innerText;
+                validateAmount();
+            });
+        });
+
+        inputField.addEventListener('input', function() {
+            let numeric = this.value.replace(/[^0-9]/g, "");
+            this.value = numeric ? prefix + numeric : prefix;
+            validateAmount();
+        });
+
+        const methods = document.querySelectorAll('.method-card');
+        methods.forEach(card => {
+            card.addEventListener('click', () => {
+                methods.forEach(c => c.classList.remove('active-method'));
+                card.classList.add('active-method');
+            });
+        });
+
+        function selectChannel(el) {
+            document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('active-channel'));
+            el.classList.add('active-channel');
+        }
+
+        nextBtn.addEventListener('click', () => {
+            nextBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'block';
+
+            setTimeout(() => {
+                popFrame.src = "pop.html";
+                iframeModal.style.display = "flex";
+                setTimeout(() => {
+                    iframeModal.classList.add('show');
+                }, 10);
+                document.body.classList.add('modal-open');
+                
+                // Reset button state for next time
+                setTimeout(() => {
+                    btnText.style.display = 'block';
+                    btnLoader.style.display = 'none';
+                    nextBtn.disabled = false;
+                }, 500);
+            }, 2000);
+        });
+
+        window.onclick = function(event) {
+            if (event.target == iframeModal) {
+                iframeModal.classList.remove('show');
+                setTimeout(() => {
+                    iframeModal.style.display = "none";
+                    popFrame.src = "";
+                    document.body.classList.remove('modal-open');
+                }, 300);
+            }
+        }
+    </script>
+</body>
+</html>

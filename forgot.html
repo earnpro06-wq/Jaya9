@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Forgot Password - BET-BAJI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .forgot-box {
+            background: #111827;
+            width: 90%;
+            max-width: 350px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            border: 1px solid #1e293b;
+            position: relative;
+        }
+
+        .forgot-header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            color: #ffcc00;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 2px solid #ff6600;
+        }
+
+        .close-btn { cursor: pointer; font-size: 20px; color: #fff; transition: 0.3s; }
+        .close-btn:hover { color: #ff6600; }
+
+        .forgot-form, .new-password-form { padding: 20px; transition: 0.4s; }
+        .new-password-form { display: none; }
+
+        .input-group { margin-bottom: 15px; position: relative; }
+
+        .label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+
+        .verification-row, .otp-row {
+            display: grid;
+            grid-template-columns: 1fr 100px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .captcha-box {
+            background: #1e293b;
+            color: #ffcc00;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-radius: 6px;
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: 2px;
+            border: 1px solid #334155;
+            height: 42px;
+        }
+        .captcha-box i { cursor: pointer; font-size: 13px; color: #ff6600; }
+
+        .phone-input-container, .pass-input-container {
+            display: flex;
+            align-items: center;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .prefix {
+            padding: 0 10px;
+            color: #ffcc00;
+            font-weight: bold;
+            font-size: 14px;
+            border-right: 1px solid #334155;
+            background: #1e293b;
+            height: 42px;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-pass {
+            padding: 0 12px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            outline: none;
+            font-size: 14px;
+            background: #0f172a;
+            color: #4ade80;
+            transition: 0.3s;
+        }
+
+        .phone-input-container input, .pass-input-container input { border: none; flex: 1; }
+        input:focus { border-color: #ff6600; background: #1e293b; }
+        .phone-input-container:focus-within, .pass-input-container:focus-within { border-color: #ff6600; }
+        input::placeholder { color: #475569; }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 10px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .request-otp-btn {
+            background: linear-gradient(180deg, #ffcc00, #ff6600);
+            border: none;
+            height: 42px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+            color: #000;
+        }
+
+        .btn-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .loader-9 { 
+            width: 20px; height: 20px; border-radius: 50%; 
+            border: 2px solid transparent; border-top-color: #000; 
+            position: relative; display: none;
+            animation: rotation 1s linear infinite; 
+        }
+        .loader-9:before { 
+            content: ""; position: absolute; top: 3px; left: 3px; right: 3px; bottom: 3px; 
+            border-radius: 50%; border: 2px solid transparent; border-top-color: #fff; 
+            animation: rotation 0.5s linear infinite reverse; 
+        }
+
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .reset-submit, .final-submit {
+            width: 100%;
+            background: linear-gradient(180deg, #ffcc00, #ff6600);
+            color: #000;
+            border: none;
+            padding: 13px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.3);
+            position: relative;
+        }
+
+        .back-links {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .back-links a {
+            color: #ffcc00;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+
+        .fade-out { opacity: 0; transform: translateX(-20px); }
+        .fade-in { animation: fadeIn 0.5s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="forgot-box">
+        <div class="forgot-header">
+            <span id="headerText"><i class="fas fa-lock" style="margin-right: 8px;"></i>Forgot Password</span>
+            <i class="fas fa-times close-btn" onclick="window.parent.closeLogin()"></i>
+        </div>
+
+        <div class="forgot-form" id="step1">
+            <div class="input-group">
+                <label class="label">Verification Code</label>
+                <div class="verification-row">
+                    <input type="text" id="captchaInput" placeholder="Enter code">
+                    <div class="captcha-box">
+                        <span id="captchaCode">1229</span>
+                        <i class="fas fa-sync-alt" onclick="generateCaptcha()"></i>
+                    </div>
+                </div>
+                <p class="error-msg" id="err-captcha">Please enter valid verification code.</p>
+            </div>
+
+            <div class="input-group">
+                <label class="label">Phone Number</label>
+                <div class="phone-input-container">
+                    <div class="prefix">+880</div>
+                    <input type="number" id="phone" placeholder="1XXXXXXXXX">
+                </div>
+                <p class="error-msg" id="err-phone">Phone must be 10 digits and not start with 0.</p>
+            </div>
+
+            <div class="input-group">
+                <label class="label">OTP Code</label>
+                <div class="otp-row">
+                    <input type="text" id="otp" placeholder="Enter OTP">
+                    <button class="request-otp-btn">GET OTP</button>
+                </div>
+                <p class="error-msg" id="err-otp">Please enter the OTP code.</p>
+            </div>
+
+            <button class="reset-submit" id="resetBtn" onclick="goToStep2()">
+                <div class="btn-content">
+                    <div class="loader-9" id="loader1"></div>
+                    <span id="btnText1">RESET PASSWORD</span>
+                </div>
+            </button>
+
+            <div class="back-links">
+                Back to <a href="javascript:void(0)" onclick="window.parent.openLogin()">Login</a>
+            </div>
+        </div>
+
+        <div class="new-password-form" id="step2">
+            <div class="input-group">
+                <label class="label">User ID</label>
+                <input type="text" id="displayUserId" value="Sazzad77" readonly style="color: #94a3b8; background: #1e293b;">
+            </div>
+
+            <div class="input-group">
+                <label class="label">New Password</label>
+                <div class="pass-input-container">
+                    <input type="password" id="newPass" placeholder="Letters & numbers (min 6)">
+                    <div class="toggle-pass" onclick="togglePassword('newPass', this)"><i class="fas fa-eye"></i></div>
+                </div>
+                <p class="error-msg" id="err-newPass">Password must be at least 6 characters with letters and numbers.</p>
+            </div>
+
+            <div class="input-group">
+                <label class="label">Confirm Password</label>
+                <div class="pass-input-container">
+                    <input type="password" id="confirmPass" placeholder="Confirm new password">
+                    <div class="toggle-pass" onclick="togglePassword('confirmPass', this)"><i class="fas fa-eye"></i></div>
+                </div>
+                <p class="error-msg" id="err-confirmPass">Passwords do not match.</p>
+            </div>
+
+            <button class="final-submit" id="finalBtn" onclick="submitNewPassword()">
+                <div class="btn-content">
+                    <div class="loader-9" id="loader2"></div>
+                    <span id="btnText2">CONFIRM RESET</span>
+                </div>
+            </button>
+
+            <div class="back-links">
+                Back to <a href="javascript:void(0)" onclick="window.parent.openLogin()">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateCaptcha() {
+            const code = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('captchaCode').innerText = code;
+        }
+
+        function togglePassword(inputId, iconEl) {
+            const input = document.getElementById(inputId);
+            const icon = iconEl.querySelector('i');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function toggleBtnLoading(btnId, loaderId, textId, isLoading, originalText) {
+            const btn = document.getElementById(btnId);
+            const loader = document.getElementById(loaderId);
+            const text = document.getElementById(textId);
+            
+            if(isLoading) {
+                btn.style.pointerEvents = 'none';
+                loader.style.display = 'block';
+                text.innerText = 'Verifying...';
+            } else {
+                btn.style.pointerEvents = 'auto';
+                loader.style.display = 'none';
+                text.innerText = originalText;
+            }
+        }
+
+        function goToStep2() {
+            const captcha = document.getElementById('captchaInput').value;
+            const phone = document.getElementById('phone').value;
+            const otp = document.getElementById('otp').value;
+            let valid = true;
+
+            if(captcha !== document.getElementById('captchaCode').innerText) {
+                document.getElementById('err-captcha').style.display = 'block';
+                valid = false;
+            } else { document.getElementById('err-captcha').style.display = 'none'; }
+
+            if(phone.length !== 10 || phone.startsWith('0')) {
+                document.getElementById('err-phone').style.display = 'block';
+                valid = false;
+            } else { document.getElementById('err-phone').style.display = 'none'; }
+
+            if(!otp) {
+                document.getElementById('err-otp').style.display = 'block';
+                valid = false;
+            } else { document.getElementById('err-otp').style.display = 'none'; }
+
+            if(valid) {
+                toggleBtnLoading('resetBtn', 'loader1', 'btnText1', true);
+                setTimeout(() => {
+                    document.getElementById('step1').classList.add('fade-out');
+                    setTimeout(() => {
+                        document.getElementById('step1').style.display = 'none';
+                        document.getElementById('step2').style.display = 'block';
+                        document.getElementById('step2').classList.add('fade-in');
+                        document.getElementById('headerText').innerHTML = '<i class="fas fa-key" style="margin-right: 8px;"></i>Set New Password';
+                    }, 400);
+                }, 1500);
+            }
+        }
+
+        function submitNewPassword() {
+            const pass = document.getElementById('newPass').value;
+            const confirm = document.getElementById('confirmPass').value;
+            const passPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+            let valid = true;
+
+            if(!passPattern.test(pass)) {
+                document.getElementById('err-newPass').style.display = 'block';
+                valid = false;
+            } else { document.getElementById('err-newPass').style.display = 'none'; }
+
+            if(pass !== confirm || !confirm) {
+                document.getElementById('err-confirmPass').style.display = 'block';
+                valid = false;
+            } else { document.getElementById('err-confirmPass').style.display = 'none'; }
+
+            if(valid) {
+                toggleBtnLoading('finalBtn', 'loader2', 'btnText2', true);
+                setTimeout(() => {
+                    alert("Password has been reset successfully!");
+                    window.parent.closeLogin();
+                }, 1500);
+            }
+        }
+
+        window.onload = generateCaptcha;
+    </script>
+</body>
+</html>

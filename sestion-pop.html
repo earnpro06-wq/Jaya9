@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Session Timeout - BET-BAJI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-container {
+            background: #111827;
+            width: 90%;
+            max-width: 350px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            border: 1px solid #1e293b;
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            color: #ffcc00;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 2px solid #ff6600;
+        }
+
+        .close-icon { 
+            cursor: pointer; 
+            font-size: 20px; 
+            color: #fff;
+            transition: 0.3s;
+        }
+        .close-icon:hover { color: #ff6600; }
+
+        .modal-body {
+            padding: 35px 20px;
+            text-align: center;
+            background: #111827;
+        }
+
+        .modal-text {
+            font-size: 15px;
+            color: #e2e8f0;
+            font-weight: 500;
+            margin-bottom: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        .close-action-btn {
+            background: linear-gradient(180deg, #ffcc00, #ff6600);
+            color: #000;
+            border: none;
+            padding: 12px 0;
+            width: 90%;
+            max-width: 220px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.3);
+            transition: 0.3s ease;
+        }
+
+        .close-action-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(255, 102, 0, 0.2);
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 480px) {
+            .modal-container { width: 85%; }
+            .modal-header { padding: 14px 18px; font-size: 15px; }
+            .modal-body { padding: 30px 15px; }
+            .modal-text { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-container">
+        <div class="modal-header">
+            <span><i class="fas fa-clock" style="margin-right: 8px;"></i>Session Timed Out</span>
+            <i class="fas fa-times close-icon" onclick="closeModal()"></i>
+        </div>
+
+        <div class="modal-body">
+            <p class="modal-text">Your session has expired. Please log in again to continue.</p>
+            <button class="close-action-btn" onclick="closeModal()">CLOSE</button>
+        </div>
+    </div>
+
+    <script>
+        function closeModal() {
+            const modal = document.querySelector('.modal-container');
+            modal.style.transition = '0.3s ease';
+            modal.style.opacity = '0';
+            modal.style.transform = 'scale(0.8)';
+            
+            setTimeout(() => {
+                // সাজ্জাদ, এখানে তোমার অ্যাপের ক্লোজ করার ফাংশন কল করতে পারো
+                if (window.parent && window.parent.closeLogin) {
+                    window.parent.closeLogin();
+                } else {
+                    document.body.style.display = 'none';
+                }
+            }, 300);
+        }
+    </script>
+
+</body>
+</html>

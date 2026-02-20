@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Withdrawal - BET-BAJI</title>
+
+    <meta name="theme-color" content="#1a1a4d">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background-color: #0b1120; color: #fff; padding-bottom: 20px; transition: overflow 0.3s; }
+        
+        .no-scroll { overflow: hidden !important; height: 100vh; }
+
+        .wallet-section { background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%); padding: 30px 15px 20px; text-align: center; border-bottom: 1px solid #2d3748; }
+        .wallet-info span { font-size: 13px; color: #94a3b8; display: block; margin-bottom: 5px; }
+        .wallet-info b { font-size: 32px; color: #ffcc00; }
+        
+        .verify-notice, .success-banner, .error-banner { display: none; margin-top: 10px; padding: 10px; border-radius: 8px; font-size: 13px; align-items: center; justify-content: center; gap: 8px; font-weight: bold; animation: fadeIn 0.5s ease; }
+        .verify-notice { color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); background: rgba(255, 77, 77, 0.1); }
+        .success-banner { color: #00ff88; border: 1px solid rgba(0, 255, 136, 0.3); background: rgba(0, 255, 136, 0.1); }
+        .error-banner { color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); background: rgba(255, 77, 77, 0.1); }
+        .verify-notice a { color: #ffcc00; text-decoration: underline; cursor: pointer; }
+
+        .section-title { padding: 12px 15px; font-size: 14px; font-weight: bold; color: #ffcc00; border-left: 4px solid #ff6600; margin-top: 15px; background: #111827; text-transform: uppercase; }
+
+        .payment-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; }
+        .method-card { border: 1px solid #374151; border-radius: 8px; padding: 10px 5px; text-align: center; cursor: pointer; background: #1f2937; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .method-card img { width: 35px; height: 35px; margin-bottom: 5px; border-radius: 5px; object-fit: cover; }
+        .method-card span { display: block; font-size: 11px; font-weight: bold; color: #94a3b8; }
+        .method-card.active { border-color: #ff6600; background: #2d3748; box-shadow: 0 0 15px rgba(255, 102, 0, 0.4); transform: scale(1.05); }
+        .method-card:active { transform: scale(0.95); }
+
+        .input-section { padding: 0 15px 20px; }
+        .input-box { border-bottom: 2px solid #374151; margin-top: 10px; position: relative; display: flex; align-items: center; }
+        .input-box .currency-symbol { font-size: 18px; font-weight: bold; color: #ffcc00; margin-right: 8px; user-select: none; }
+        .input-box input, .input-box select { width: 100%; padding: 12px 0; border: none; outline: none; font-size: 18px; font-weight: bold; background: transparent; color: #fff; appearance: none; }
+        .input-box select { color: #ffcc00; cursor: pointer; }
+        .limit-text { font-size: 11px; color: #94a3b8; margin-top: 8px; }
+        .field-error { color: #ff4d4d; font-size: 11px; margin-top: 5px; display: none; font-weight: bold; }
+
+        .withdraw-btn { width: 90%; margin: 25px auto; display: block; background: linear-gradient(90deg, #ff6600, #ff8c00); color: #fff; border: none; padding: 16px; font-size: 17px; font-weight: bold; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3); transition: 0.3s; }
+        
+        .confirm-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(10px); padding: 20px; }
+        .confirm-card { background: #1a1a4d; width: 100%; max-width: 320px; border-radius: 15px; overflow: hidden; border: 1px solid #ffcc00; animation: zoomIn 0.3s ease; box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); }
+        
+        .confirm-header { background: #0b1120; color: #ffcc00; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ffcc00; }
+        .confirm-header h3 { font-size: 16px; font-weight: 700; }
+        .confirm-header i { cursor: pointer; font-size: 18px; color: #ff4d4d; }
+
+        .confirm-body { padding: 20px; color: #fff; }
+        .confirm-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .confirm-row span { color: #94a3b8; }
+        .confirm-row b { color: #ffcc00; font-weight: 700; }
+
+        .confirm-footer { padding: 0 20px 20px; }
+        
+        .btn-final-confirm { width: 100%; background: linear-gradient(90deg, #ff6600, #ff8c00); color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        /* Blocked Modal Styles */
+        .blocked-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 17, 32, 0.7); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; padding: 20px; z-index: 9999; }
+        .blocked-modal-container { background: #111827; width: 100%; max-width: 340px; border-radius: 15px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.8); border: 1px solid #334155; animation: modalFadeIn 0.3s ease-out; }
+        .blocked-modal-header { background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%); color: #ffcc00; padding: 15px 20px; font-size: 16px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff6600; }
+        .blocked-close-icon { font-size: 20px; cursor: pointer; color: #fff; }
+        .blocked-modal-body { padding: 30px 20px; text-align: center; color: #94a3b8; }
+        .blocked-modal-body i { font-size: 45px; color: #ff6600; margin-bottom: 15px; display: block; }
+        .blocked-modal-body p { font-size: 14px; line-height: 1.6; color: #e2e8f0; font-weight: 500; }
+        .blocked-modal-footer { padding: 0 20px 25px 20px; text-align: center; }
+        .blocked-btn-confirm { background: linear-gradient(180deg, #ffcc00, #ff6600); color: #000; border: none; padding: 12px 0; width: 100%; font-size: 16px; font-weight: bold; border-radius: 10px; cursor: pointer; }
+
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(11, 17, 32, 0.8);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .loader-box {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 102, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(26, 26, 77, 0.3);
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.3);
+            animation: pulse-animation 1.5s ease-in-out infinite;
+        }
+
+        .loader-box img {
+            width: 65px;
+            height: auto;
+            border-radius: 50%;
+        }
+
+        @keyframes pulse-animation {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 102, 0, 0.3); border-color: rgba(255, 102, 0, 0.4); }
+            50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(255, 102, 0, 0.6); border-color: rgba(255, 102, 0, 0.8); }
+        }
+
+        @keyframes modalFadeIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+        .info-footer { padding: 20px; text-align: center; color: #64748b; font-size: 12px; }
+    </style>
+</head>
+<body id="mainBody">
+
+    <div id="loader-wrapper">
+        <div class="loader-box">
+            <img src="https://i.postimg.cc/G20md6XR/Picsart-26-02-12-18-50-49-888.png" alt="Loading...">
+        </div>
+    </div>
+
+    <div class="blocked-modal-overlay" id="blockedModal">
+        <div class="blocked-modal-container">
+            <div class="blocked-modal-header">
+                <span><i class="fas fa-info-circle" style="margin-right: 8px;"></i>System Notice</span>
+                <span class="blocked-close-icon" onclick="closeBlockedModal()">✕</span>
+            </div>
+            <div class="blocked-modal-body">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Withdrawals are currently unavailable. Please contact our live chat support for further assistance.</p>
+            </div>
+            <div class="blocked-modal-footer">
+                <button class="blocked-btn-confirm" onclick="closeBlockedModal()">CONFIRM</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="wallet-section">
+        <div class="wallet-info">
+            <span>Main Wallet Balance <i class="fas fa-sync-alt" id="refresh-icon" style="font-size: 12px; margin-left: 5px; cursor: pointer; color: #ffcc00;"></i></span>
+            <b id="wallet-balance">৳ 0.00</b>
+            
+            <div class="verify-notice" id="verifyNotice">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Please verify your phone number. <a onclick="window.parent.openEditProfile()">Verify Now</a></span>
+            </div>
+
+            <div class="error-banner" id="errorBanner">
+                <i class="fas fa-times-circle"></i>
+                <span id="errorMsg">Insufficient Balance!</span>
+            </div>
+
+            <div class="success-banner" id="successBanner">
+                <i class="fas fa-check-circle"></i>
+                <span>Withdrawal successful! Please wait for approval.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">Select Withdrawal Method</div>
+    <div class="payment-methods">
+        <div class="method-card active" data-method="BKASH" onclick="selectMethod(this, 'BKASH')">
+            <img src="https://i.postimg.cc/Dw3BjTsP/images-(19).jpg">
+            <span>BKASH</span>
+        </div>
+        <div class="method-card" data-method="NAGAD" onclick="selectMethod(this, 'NAGAD')">
+            <img src="https://i.postimg.cc/G3NMDYmZ/images-(18).jpg">
+            <span>NAGAD</span>
+        </div>
+        <div class="method-card" data-method="ROCKET" onclick="selectMethod(this, 'ROCKET')">
+            <img src="https://i.postimg.cc/50KsnQqr/images-(11).png">
+            <span>ROCKET</span>
+        </div>
+    </div>
+
+    <div class="section-title">Withdrawal Amount</div>
+    <div class="input-section">
+        <div class="input-box">
+            <span class="currency-symbol">৳</span>
+            <input type="number" id="withdrawAmount" placeholder="0.00">
+        </div>
+        <div class="field-error" id="amountError">Please enter a valid amount.</div>
+        <p class="limit-text">Transaction Limit: ৳ 10.00 - ৳ 30,000.00</p>
+    </div>
+
+    <div class="section-title">Select Phone Number</div>
+    <div class="input-section">
+        <div class="input-box">
+            <select id="phoneSelector">
+                <option value="" disabled selected>Choose Number</option>
+            </select>
+            <i class="fas fa-chevron-down" style="position: absolute; right: 10px; top: 15px; color: #94a3b8; font-size: 12px;"></i>
+        </div>
+        <div class="field-error" id="phoneError">Please select a phone number.</div>
+    </div>
+
+    <button class="withdraw-btn" id="submitBtn">Submit Withdrawal</button>
+
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-card">
+            <div class="confirm-header">
+                <h3>Withdrawal Confirmation</h3>
+                <i class="fas fa-circle-xmark" onclick="closeConfirm()"></i>
+            </div>
+            <div class="confirm-body">
+                <div class="confirm-row">
+                    <span>Amount</span>
+                    <b id="confAmount">৳ 0.00</b>
+                </div>
+                <div class="confirm-row">
+                    <span>Method</span>
+                    <b id="confMethod">BKASH</b>
+                </div>
+            </div>
+            <div class="confirm-footer">
+                <button class="btn-final-confirm" id="finalConfirmBtn">
+                    Confirm Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-footer">
+        <h3>Copyright © 2026 BET-BAJI.</h3>
+        <p>All rights are reserved.</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-GSBF0PJDx8_AaFD0iyJiZMMsq8ORryE",
+            authDomain: "jaya9-54ae3.firebaseapp.com",
+            databaseURL: "https://jaya9-54ae3-default-rtdb.firebaseio.com",
+            projectId: "jaya9-54ae3",
+            storageBucket: "jaya9-54ae3.firebasestorage.app",
+            messagingSenderId: "645319696874",
+            appId: "1:645319696874:web:a664ff269a999add3d9293"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let selectedMethod = "BKASH";
+        let currentBalance = 0;
+        let isUserVerified = false;
+        let withdrawStatus = "active";
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                fetchLatestData();
+            }
+        });
+
+        function fetchLatestData() {
+            if (!currentUser) return;
+            const userRef = ref(db, 'users/' + currentUser.uid);
+            onValue(userRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    currentBalance = Number(data.balance) || 0;
+                    isUserVerified = (data.isVerified === true || data.isVerified === "true");
+                    withdrawStatus = data.withdrawStatus || "active";
+                    updateUI(data);
+                }
+            });
+        }
+
+        function formatPhoneNumber(num) {
+            if (!num) return "";
+            let cleanNum = num.toString().replace(/\D/g, '');
+            if (cleanNum.startsWith('880')) cleanNum = cleanNum.substring(3);
+            else if (cleanNum.startsWith('0')) cleanNum = cleanNum.substring(1);
+            return "+880 " + cleanNum;
+        }
+
+        function updateUI(data) {
+            const balanceEl = document.getElementById('wallet-balance');
+            if (balanceEl) {
+                balanceEl.innerText = "৳ " + currentBalance.toFixed(2);
+            }
+            
+            document.getElementById('verifyNotice').style.display = isUserVerified ? 'none' : 'flex';
+
+            const selector = document.getElementById('phoneSelector');
+            if (selector) {
+                const currentSelection = selector.value;
+                selector.innerHTML = '<option value="" disabled selected>Choose Number</option>';
+                if (data.phone) {
+                    const opt1 = document.createElement('option');
+                    opt1.value = data.phone;
+                    opt1.innerText = formatPhoneNumber(data.phone);
+                    selector.appendChild(opt1);
+                }
+                if (data.secondaryPhone) {
+                    const opt2 = document.createElement('option');
+                    opt2.value = data.secondaryPhone;
+                    opt2.innerText = formatPhoneNumber(data.secondaryPhone);
+                    selector.appendChild(opt2);
+                }
+                if (currentSelection) selector.value = currentSelection;
+            }
+        }
+
+        document.getElementById('refresh-icon').onclick = function() {
+            this.style.transition = "transform 0.6s ease";
+            this.style.transform = "rotate(360deg)";
+            fetchLatestData();
+            setTimeout(() => { this.style.transform = "rotate(0deg)"; }, 600);
+        };
+
+        window.selectMethod = function(el, method) {
+            document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            selectedMethod = method;
+        };
+
+        window.closeBlockedModal = function() {
+            document.getElementById('blockedModal').style.display = 'none';
+            document.body.classList.remove('no-scroll');
+        }
+
+        function showErrorBanner(msg) {
+            const eb = document.getElementById('errorBanner');
+            document.getElementById('errorMsg').innerText = msg;
+            eb.style.display = 'flex';
+            setTimeout(() => { eb.style.display = 'none'; }, 3000);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.getElementById('submitBtn').onclick = function() {
+            // Check if withdrawal is blocked
+            if (withdrawStatus === "blocked") {
+                document.getElementById('blockedModal').style.display = 'flex';
+                document.body.classList.add('no-scroll');
+                return;
+            }
+
+            document.getElementById('amountError').style.display = 'none';
+            document.getElementById('phoneError').style.display = 'none';
+
+            if (!isUserVerified) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const phone = document.getElementById('phoneSelector').value;
+
+            let hasError = false;
+
+            if (!amount || amount < 10 || amount > 30000) {
+                document.getElementById('amountError').style.display = 'block';
+                hasError = true;
+            }
+            
+            if (amount > currentBalance) {
+                showErrorBanner("Insufficient Balance!");
+                hasError = true;
+            }
+
+            if (!phone) {
+                document.getElementById('phoneError').style.display = 'block';
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            document.getElementById('confMethod').innerText = selectedMethod;
+            document.getElementById('confAmount').innerText = "৳ " + amount.toFixed(2);
+            document.getElementById('confirmOverlay').style.display = 'flex';
+            document.body.classList.add('no-scroll');
+        };
+
+        window.closeConfirm = function() {
+            document.getElementById('confirmOverlay').style.display = 'none';
+            document.body.classList.remove('no-scroll');
+        }
+
+        document.getElementById('finalConfirmBtn').onclick = async function() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const phone = document.getElementById('phoneSelector').value;
+
+            closeConfirm();
+            
+            const loader = document.getElementById('loader-wrapper');
+            loader.style.display = 'flex';
+            document.body.classList.add('no-scroll');
+
+            try {
+                const requestRef = push(ref(db, 'withdraw_requests'));
+                const newBalance = currentBalance - amount;
+                
+                await Promise.all([
+                    set(requestRef, {
+                        uid: currentUser.uid,
+                        amount: amount,
+                        method: selectedMethod,
+                        phone: phone,
+                        status: "Pending",
+                        timestamp: serverTimestamp()
+                    }),
+                    set(ref(db, `users/${currentUser.uid}/balance`), newBalance)
+                ]);
+
+                loader.style.display = 'none';
+                document.body.classList.remove('no-scroll');
+                document.getElementById('withdrawAmount').value = "";
+                
+                const successBanner = document.getElementById('successBanner');
+                successBanner.style.display = 'flex';
+                setTimeout(() => { successBanner.style.display = 'none'; }, 3000);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            } catch (e) {
+                loader.style.display = 'none';
+                document.body.classList.remove('no-scroll');
+                alert("Error: " + e.message);
+            }
+        };
+    </script>
+</body>
+</html>

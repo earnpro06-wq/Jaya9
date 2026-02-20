@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Update Account Detail</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .confirmation-modal {
+            width: 100%;
+            max-width: 400px;
+            background-color: #111827;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            z-index: 100;
+            overflow: hidden;
+            border: 1px solid #1e293b;
+            animation: popIn 0.2s ease-out;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            color: #ffcc00;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: bold;
+            border-bottom: 1px solid #1e293b;
+            text-transform: uppercase;
+        }
+
+        .close-btn {
+            font-size: 18px;
+            cursor: pointer;
+            color: #fff;
+            padding: 2px 5px;
+        }
+
+        .modal-body {
+            padding: 20px 15px;
+            text-align: center;
+        }
+
+        .message-text {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .message-text span {
+            color: #ff6600;
+            display: block;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        .submit-btn {
+            display: inline-block;
+            width: auto;
+            min-width: 120px;
+            padding: 10px 25px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+            text-transform: uppercase;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="confirmation-modal">
+        <div class="modal-header">
+            <span>Update Account Detail</span>
+            <div class="close-btn" onclick="backToEdit()">✕</div>
+        </div>
+        <div class="modal-body">
+            <p class="message-text">
+                You only can edit profile once. 
+                <span>Please confirm your details are correct.</span>
+            </p>
+            <button class="submit-btn" onclick="handleFinalSubmit()">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        window.onpopstate = function() {
+            backToEdit();
+        };
+
+        function backToEdit() {
+            window.parent.closeConfirmModal();
+        }
+
+        function handleFinalSubmit() {
+            // ১. কনফার্ম উইন্ডো বন্ধ করা
+            backToEdit();
+            
+            // ২. মেইন উইন্ডোকে খুঁজে বের করা
+            const mainWin = window.top;
+
+            if (mainWin && typeof mainWin.showLoader === "function") {
+                // ৩. লোডার চালু করা
+                mainWin.showLoader(() => {
+                    // ৪. পুরো স্ক্রিনে (Full Screen) personal.html ওপেন করা
+                    mainWin.location.href = 'personal.html';
+                });
+            } else {
+                // সরাসরি ফুল স্ক্রিনে রিডাইরেক্ট
+                window.top.location.href = 'personal.html';
+            }
+        }
+    </script>
+
+</body>
+</html>

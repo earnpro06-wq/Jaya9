@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Transfer Record | Bet-Baji</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { 
+            background: radial-gradient(circle at top, #1a1a4d, #0b1120 70%);
+            color: #fff; 
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        .record-header {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .record-header h3 {
+            color: #ffcc00;
+            font-size: 16px;
+            border-left: 4px solid #ff6600;
+            padding-left: 10px;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .filter-btn {
+            background: #111827;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            background: #ff6600;
+            color: white;
+            border-color: #ff6600;
+        }
+
+        .record-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .record-card {
+            background: rgba(31, 41, 55, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .record-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 102, 0, 0.1);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ff6600;
+            font-size: 18px;
+        }
+
+        .details span {
+            display: block;
+        }
+
+        .type-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #f8fafc;
+        }
+
+        .record-date {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .amount-box {
+            text-align: right;
+        }
+
+        .amount {
+            font-size: 15px;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+
+        .status {
+            font-size: 10px;
+            margin-top: 4px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .status-success { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+
+        @media screen and (max-width: 480px) {
+            .record-card { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="record-header">
+        <h3>Transfer Records</h3>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-btn active">All History</div>
+        <div class="filter-btn">To Game</div>
+        <div class="filter-btn">To Main</div>
+    </div>
+
+    <div class="record-list">
+        
+        <div class="record-card">
+            <div class="record-info">
+                <div class="icon-box"><i class="fas fa-exchange-alt"></i></div>
+                <div class="details">
+                    <span class="type-title">Main ➔ PG Soft Slots</span>
+                    <span class="record-date">2026-02-17 10:24:15</span>
+                </div>
+            </div>
+            <div class="amount-box">
+                <span class="amount">৳ 500.00</span>
+                <br>
+                <span class="status status-success">Success</span>
+            </div>
+        </div>
+
+        <div class="record-card">
+            <div class="record-info">
+                <div class="icon-box" style="color: #ffcc00;"><i class="fas fa-undo"></i></div>
+                <div class="details">
+                    <span class="type-title">Evolution ➔ Main Wallet</span>
+                    <span class="record-date">2026-02-16 14:10:05</span>
+                </div>
+            </div>
+            <div class="amount-box">
+                <span class="amount">৳ 1,250.00</span>
+                <br>
+                <span class="status status-success">Success</span>
+            </div>
+        </div>
+
+        <div class="record-card">
+            <div class="record-info">
+                <div class="icon-box"><i class="fas fa-exchange-alt"></i></div>
+                <div class="details">
+                    <span class="type-title">Main ➔ JILI Games</span>
+                    <span class="record-date">2026-02-15 22:45:12</span>
+                </div>
+            </div>
+            <div class="amount-box">
+                <span class="amount">৳ 200.00</span>
+                <br>
+                <span class="status status-success">Success</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

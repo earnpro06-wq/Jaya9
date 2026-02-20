@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bet-Baji | Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Global Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { 
+            background-color: transparent; 
+            color: #fff; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+            scroll-behavior: smooth;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 360px;
+            background: rgba(17, 24, 37, 0.98); 
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            border: 1px solid #1e293b;
+            margin: auto;
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .register-header .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffcc00;
+            font-style: italic;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .register-header h2 {
+            font-size: 14px; 
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+            margin-left: 2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i.field-icon {
+            position: absolute;
+            left: 12px;
+            color: #f39c12;
+            font-size: 14px;
+            z-index: 5;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 10px 35px 10px 35px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: #fff;
+            outline: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        /* সাজ্জাদ, ফোন ইনপুটের জন্য বিশেষ প্যাডিং */
+        .phone-wrapper input {
+            padding-left: 70px;
+        }
+
+        /* +880 প্রিফিক্স স্টাইল */
+        .phone-prefix {
+            position: absolute;
+            left: 32px;
+            color: #ffcc00;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #ff6600;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 13px;
+            z-index: 10;
+        }
+
+        .terms {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: #94a3b8;
+            margin: 10px 0;
+        }
+
+        .terms input {
+            accent-color: #ff6600;
+        }
+
+        .reg-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, #ff6600, #ff0000);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .bottom-links {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .bottom-links a {
+            color: #ffcc00;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-icon {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 18px;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-container" style="position: relative;">
+        <i class="fas fa-times close-icon" onclick="parent.closeLogin()"></i>
+
+        <div class="register-header">
+            <div class="logo">BET-BAJI</div>
+            <h2>Create New Account</h2>
+        </div>
+
+        <form id="regForm">
+            <div class="form-group">
+                <label>Username</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user field-icon"></i>
+                    <input type="text" id="username" placeholder="Username" required onfocus="autoScroll(this)">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number</label>
+                <div class="input-wrapper phone-wrapper">
+                    <i class="fas fa-phone field-icon"></i>
+                    <span class="phone-prefix">+880</span>
+                    <input type="tel" id="phone" placeholder="XXXXXXXXX" maxlength="10" required onfocus="autoScroll(this)">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope field-icon"></i>
+                    <input type="email" id="email" placeholder="Email" required onfocus="autoScroll(this)">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock field-icon"></i>
+                    <input type="password" id="password" placeholder="Password" required onfocus="autoScroll(this)">
+                    <i class="fas fa-eye-slash toggle-password" onclick="togglePass('password', this)"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-shield-alt field-icon"></i>
+                    <input type="password" id="confirm_password" placeholder="Confirm Password" required onfocus="autoScroll(this)">
+                    <i class="fas fa-eye-slash toggle-password" onclick="togglePass('confirm_password', this)"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Refer Code (Optional)</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-gift field-icon"></i>
+                    <input type="text" id="refer_code" placeholder="Refer code" onfocus="autoScroll(this)">
+                </div>
+            </div>
+
+            <div class="terms">
+                <input type="checkbox" id="agree" required>
+                <label for="agree">I am 18+ and I agree to the Terms</label>
+            </div>
+
+            <button type="submit" class="reg-btn" id="regBtn">Join Now</button>
+        </form>
+
+        <div class="bottom-links">
+            Have an account? <a onclick="goToLogin()">Login</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-GSBF0PJDx8_AaFD0iyJiZMMsq8ORryE",
+            authDomain: "jaya9-54ae3.firebaseapp.com",
+            databaseURL: "https://jaya9-54ae3-default-rtdb.firebaseio.com",
+            projectId: "jaya9-54ae3",
+            storageBucket: "jaya9-54ae3.firebasestorage.app",
+            messagingSenderId: "645319696874",
+            appId: "1:645319696874:web:a664ff269a999add3d9293",
+            measurementId: "G-QEZETFRFS5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const regForm = document.getElementById('regForm');
+        const regBtn = document.getElementById('regBtn');
+
+        regForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const phoneInput = document.getElementById('phone').value;
+            const fullPhone = "+880" + phoneInput; // সাজ্জাদ, ডাটাবেসে পূর্ণ নম্বর সেভ হবে
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirm_password = document.getElementById('confirm_password').value;
+            const refer_code = document.getElementById('refer_code').value;
+
+            if (password !== confirm_password) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            if (phoneInput.length < 10) {
+                alert("Please enter a valid 10-digit number!");
+                return;
+            }
+
+            regBtn.innerText = "Processing...";
+            regBtn.disabled = true;
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    return set(ref(db, 'users/' + user.uid), {
+                        username: username,
+                        phone: fullPhone,
+                        email: email,
+                        refer_code: refer_code,
+                        balance: 0,
+                        createdAt: new Date().toISOString()
+                    });
+                })
+                .then(() => {
+                    if (window.parent && window.parent.onLoginSuccess) {
+                        window.parent.onLoginSuccess();
+                    }
+                })
+                .catch((error) => {
+                    regBtn.innerText = "Join Now";
+                    regBtn.disabled = false;
+                    alert("Error: " + error.message);
+                });
+        });
+    </script>
+
+    <script>
+        // নম্বর ফিল্ডে শুধু সংখ্যা লেখার অনুমতি দেওয়া
+        document.getElementById('phone').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        function goToLogin() {
+            try {
+                window.parent.document.getElementById('login-frame').src = 'login.html';
+            } catch (e) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        function togglePass(id, el) {
+            const input = document.getElementById(id);
+            if (input.type === "password") {
+                input.type = "text";
+                el.classList.remove('fa-eye-slash');
+                el.classList.add('fa-eye');
+                el.style.color = "#ff6600";
+            } else {
+                input.type = "password";
+                el.classList.remove('fa-eye');
+                el.classList.add('fa-eye-slash');
+                el.style.color = "#94a3b8";
+            }
+        }
+
+        function autoScroll(el) {
+            setTimeout(() => {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+    </script>
+</body>
+</html>

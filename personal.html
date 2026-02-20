@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Profile Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: #0b1120;
+            max-width: 500px;
+            margin: 0 auto;
+            color: #fff;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        #edit-modal, #verify-modal, #add-number-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            backdrop-filter: blur(2px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            width: 90%;
+            max-width: 400px;
+            height: 480px; 
+            background: #111827;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 25px rgba(0,0,0,0.7);
+            border: 1px solid #1e293b;
+        }
+
+        #verify-modal .modal-content, #add-number-modal .modal-content {
+            width: 85%;
+            max-width: 340px;
+            height: 380px;
+        }
+
+        #edit-iframe, #verify-iframe, #add-number-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .banner {
+            background: linear-gradient(45deg, #1a1a4d, #000);
+            height: 80px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid #334155;
+        }
+
+        .profile-pic-wrapper {
+            position: absolute;
+            bottom: -35px;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .profile-pic {
+            width: 75px;
+            height: 75px;
+            background-color: #1f2937;
+            border-radius: 50%;
+            border: 2px solid #ff6600;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+        }
+
+        /* নামের বক্স যা Edit Profile বক্সের ডিজাইনের সাথে মিল রেখে করা হয়েছে */
+        .name-box-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 45px;
+        }
+
+        .name-container {
+            border: 1px solid #ff6600;
+            padding: 4px 15px;
+            border-radius: 4px;
+            color: #ff6600;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            background: transparent;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .content-area {
+            background-color: #0b1120;
+            margin-top: 5px;
+            padding: 20px;
+        }
+
+        .edit-profile-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .edit-profile-box {
+            border: 1px solid #ff6600;
+            padding: 4px 10px;
+            border-radius: 4px;
+            color: #ff6600;
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .info-row {
+            border-bottom: 1px solid #1e293b;
+            padding: 12px 0;
+        }
+
+        .label {
+            color: #94a3b8;
+            font-weight: bold;
+            font-size: 11px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .value {
+            color: #ffcc00;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .phone-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: none; 
+        }
+
+        .unverified {
+            background: rgba(255, 77, 77, 0.1);
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+        }
+
+        .verified {
+            background: rgba(74, 222, 128, 0.1);
+            color: #4ade80;
+            border: 1px solid #4ade80;
+        }
+
+        .verify-badge-btn {
+            display: none; 
+            align-items: center;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .verify-badge-btn:active {
+            transform: scale(0.95);
+        }
+
+        .verify-badge-btn span {
+            color: #38bdf8;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-left: 5px;
+        }
+
+        .secondary-phone-list {
+            margin-top: 10px;
+        }
+
+        .secondary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-top: 1px dashed #1e293b;
+        }
+
+        .add-btn {
+            background-color: #1a1a4d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 10px;
+            margin-top: 15px;
+            font-weight: bold;
+            width: auto;
+            display: inline-block;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .footer-info {
+            background-color: #111827;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            font-size: 11px;
+            border-top: 1px solid #1e293b;
+        }
+
+        .footer-info strong {
+            color: #ffcc00;
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body id="main-body">
+
+    <input type="file" id="pic-input" style="display: none;" accept="image/*">
+
+    <div id="edit-modal">
+        <div class="modal-content">
+            <iframe id="edit-iframe" src=""></iframe>
+        </div>
+    </div>
+
+    <div id="verify-modal">
+        <div class="modal-content">
+            <iframe id="verify-iframe" src=""></iframe>
+        </div>
+    </div>
+
+    <div id="add-number-modal">
+        <div class="modal-content">
+            <iframe id="add-number-iframe" src=""></iframe>
+        </div>
+    </div>
+
+    <div class="banner">
+        <div class="profile-pic-wrapper" onclick="document.getElementById('pic-input').click()">
+            <div class="profile-pic" id="profile-display"></div>
+        </div>
+    </div>
+
+    <div class="name-box-wrapper">
+        <div class="name-container" id="val-fullname-box">...</div>
+    </div>
+
+    <div class="content-area">
+        <div class="edit-profile-container">
+            <div class="edit-profile-box" onclick="openEditModal()">Edit Profile</div>
+        </div>
+        
+        <div class="info-row">
+            <div class="label">Username</div>
+            <div class="value" id="val-username">...</div>
+        </div>
+
+        <div class="info-row">
+            <div class="label">Primary Phone Number</div>
+            <div class="phone-container">
+                <div>
+                    <span class="value" id="val-phone">...</span>
+                    <span id="verify-status" class="status-badge"></span>
+                </div>
+                <div id="verify-btn-container">
+                    <div class="verify-badge-btn" id="verify-otp-btn" onclick="openVerifyModal()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L4 5v6.5c0 5.05 3.41 9.76 8 10.5 4.59-.74 8-5.45 8-10.5V5l-8-3z" fill="#38bdf8"/>
+                            <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Verify OTP</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="secondary-phone-section" class="secondary-phone-list"></div>
+
+            <button id="add-secondary-btn" class="add-btn" onclick="openAddNumberModal()">ADD SECONDARY NUMBER</button>
+        </div>
+
+        <div class="info-row">
+            <div class="label">Email</div>
+            <div class="value" id="val-email">Not Set</div>
+        </div>
+
+        <div class="info-row">
+            <div class="label">Date of birth</div>
+            <div class="value" id="val-dob">...</div>
+        </div>
+
+        <div class="info-row">
+            <div class="label">Currency</div>
+            <div class="value">BDT</div>
+        </div>
+    </div>
+
+    <div class="footer-info">
+        <div>
+            <strong>Payment Methods</strong>
+            <span style="font-size: 18px;">💳 📱 🏦</span>
+        </div>
+        <div>
+            <strong>Customer Support</strong>
+            <span style="color: #fff;">🎧 Chat Now</span>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-GSBF0PJDx8_AaFD0iyJiZMMsq8ORryE",
+            authDomain: "jaya9-54ae3.firebaseapp.com",
+            databaseURL: "https://jaya9-54ae3-default-rtdb.firebaseio.com",
+            projectId: "jaya9-54ae3",
+            storageBucket: "jaya9-54ae3.firebasestorage.app",
+            messagingSenderId: "645319696874",
+            appId: "1:645319696874:web:a664ff269a999add3d9293",
+            measurementId: "G-QEZETFRFS5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        function maskPhone(phone) {
+            if (!phone || phone.length < 10) return phone;
+            let cleanPhone = phone.replace("+88", "");
+            if (cleanPhone.length === 11) {
+                return "+88" + cleanPhone.substring(0, 5) + "***" + cleanPhone.substring(cleanPhone.length - 3);
+            }
+            return phone.substring(0, 5) + "******" + phone.substring(phone.length - 3);
+        }
+
+        function updateUI(data) {
+            if (!data) return;
+            document.getElementById('val-username').innerText = data.username || "User";
+            document.getElementById('val-fullname-box').innerText = data.fullname || "NO NAME"; // নতুন বক্সের জন্য
+            document.getElementById('val-phone').innerText = maskPhone(data.phone) || "No Number";
+            document.getElementById('val-email').innerText = data.email || "Not Set";
+            document.getElementById('val-dob').innerText = data.dob || "Not Set";
+
+            const statusBadge = document.getElementById('verify-status');
+            const verifyBtn = document.getElementById('verify-otp-btn');
+
+            statusBadge.style.display = "inline-block";
+
+            if (data.isVerified === true) {
+                statusBadge.innerText = "Verified";
+                statusBadge.className = "status-badge verified";
+                verifyBtn.style.display = "none";
+            } else {
+                statusBadge.innerText = "Unverified";
+                statusBadge.className = "status-badge unverified";
+                verifyBtn.style.display = "flex";
+            }
+
+            const secondarySection = document.getElementById('secondary-phone-section');
+            const addBtn = document.getElementById('add-secondary-btn');
+            secondarySection.innerHTML = "";
+            
+            let secondaryNums = [];
+            if (data.secondaryPhone) secondaryNums.push(data.secondaryPhone);
+            if (data.secondaryPhone2) secondaryNums.push(data.secondaryPhone2);
+
+            secondaryNums.forEach((num, index) => {
+                const div = document.createElement('div');
+                div.className = "secondary-item";
+                div.innerHTML = `
+                    <div class="label" style="margin-bottom:0">Secondary Phone ${index + 1}</div>
+                    <div class="value">${maskPhone(num)}</div>
+                `;
+                secondarySection.appendChild(div);
+            });
+
+            if (secondaryNums.length >= 2) {
+                addBtn.style.display = "none";
+            } else {
+                addBtn.style.display = "inline-block";
+            }
+        }
+
+        const cachedData = localStorage.getItem('user_profile_data');
+        if (cachedData) {
+            updateUI(JSON.parse(cachedData));
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const userRef = ref(db, 'users/' + user.uid);
+                onValue(userRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        updateUI(data);
+                        localStorage.setItem('user_profile_data', JSON.stringify(data));
+                    }
+                });
+            }
+        });
+
+        const savedPic = localStorage.getItem('user_profile_pic');
+        if (savedPic) document.getElementById('profile-display').style.backgroundImage = `url(${savedPic})`;
+
+        document.getElementById('pic-input').onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64Img = event.target.result;
+                    document.getElementById('profile-display').style.backgroundImage = `url(${base64Img})`;
+                    localStorage.setItem('user_profile_pic', base64Img);
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+    </script>
+
+    <script>
+        function openEditModal() {
+            const modal = document.getElementById('edit-modal');
+            const iframe = document.getElementById('edit-iframe');
+            iframe.src = "edit-profile.html"; 
+            modal.style.display = "flex"; 
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        function openVerifyModal() {
+            const modal = document.getElementById('verify-modal');
+            const iframe = document.getElementById('verify-iframe');
+            iframe.src = "verify.html"; 
+            modal.style.display = "flex"; 
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeVerifyModal() {
+            document.getElementById('verify-modal').style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        function openAddNumberModal() {
+            const modal = document.getElementById('add-number-modal');
+            const iframe = document.getElementById('add-number-iframe');
+            iframe.src = "new-number.html"; 
+            modal.style.display = "flex"; 
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeAddNumberModal() {
+            document.getElementById('add-number-modal').style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        window.onclick = function(event) {
+            if (event.target.id.includes('modal')) {
+                event.target.style.display = "none";
+                document.body.style.overflow = "auto";
+            }
+        }
+    </script>
+
+</body>
+</html>

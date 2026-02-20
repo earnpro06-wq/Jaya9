@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Withdrawal Restricted - BET-BAJI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 17, 32, 0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 9999;
+        }
+
+        .modal-container {
+            background: #111827;
+            width: 100%;
+            max-width: 340px;
+            border-radius: 15px;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            border: 1px solid #334155;
+            animation: modalSlideUp 0.3s ease-out;
+        }
+
+        @keyframes modalSlideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            color: #ffcc00;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 2px solid #ff6600;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-body {
+            padding: 25px 20px;
+            color: #e2e8f0;
+        }
+
+        .modal-body i {
+            font-size: 40px;
+            color: #ff6600;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .modal-body p {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        .reason-box {
+            background: #1e293b;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #ffcc00;
+            font-size: 13px;
+            font-weight: bold;
+            color: #ffcc00;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .modal-footer {
+            padding: 0 20px 25px 20px;
+        }
+
+        .btn-status {
+            background: linear-gradient(180deg, #ffcc00, #ff6600);
+            color: #000;
+            border: none;
+            padding: 12px 0;
+            width: 100%;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.3);
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn-status:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                Withdrawal Restricted
+            </div>
+            <div class="modal-body">
+                <i class="fas fa-user-shield"></i>
+                <p>You're not allowed to make any withdrawal due to the following reason:</p>
+                <div class="reason-box">
+                    <i class="fas fa-exclamation-circle" style="font-size: 14px; display: inline; color: #ffcc00; margin-right: 5px;"></i>
+                    1.) Turnover not met, pending ticket: 1
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-status">Check Status</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Profile Page Clone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #0b1120;
+            --header-gradient: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            --orange-text: #ff6600;
+            --card-bg: #1f2937;
+            --border-color: #374151;
+            --text-gold: #ffcc00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--primary-bg); padding-bottom: 30px; color: #fff; }
+
+        .user-header {
+            background: var(--header-gradient);
+            height: 130px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            color: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .avatar {
+            width: 65px;
+            height: 65px;
+            background: #ff6600;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            margin-right: 15px;
+            border: 2px solid rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.4);
+        }
+        .username { font-size: 20px; font-weight: 600; color: var(--text-gold); }
+        .close-btn { position: absolute; top: 15px; right: 15px; font-size: 24px; opacity: 0.8; cursor: pointer; color: #fff; }
+
+        .wallet-bar {
+            background: #111827;
+            margin: 10px 12px 10px 12px;
+            padding: 16px 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            position: relative;
+            z-index: 5;
+        }
+        .wallet-label { color: var(--text-gold); font-size: 14px; font-weight: 600; }
+        .wallet-amount { font-weight: bold; font-size: 18px; color: #fff; }
+
+        .section-container {
+            background: var(--card-bg);
+            margin: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .section-title {
+            padding: 12px 15px;
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--text-gold);
+            border-left: 4px solid #ff6600;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 15px 5px;
+        }
+        .grid-item {
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .grid-item i {
+            font-size: 24px;
+            color: #f39c12;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .grid-item span {
+            font-size: 11px;
+            color: #94a3b8;
+            display: block;
+            line-height: 1.2;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: #111827;
+            margin: 20px 12px;
+            padding: 16px;
+            text-align: center;
+            border-radius: 8px;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+
+        .grid-item:active { opacity: 0.6; transform: scale(0.95); transition: 0.1s; }
+        
+        .rotate-anim { animation: rotate 0.5s linear; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="user-header">
+        <div class="avatar" id="avatarLetter">?</div>
+        <div class="username" id="displayUsername">Loading...</div>
+        <div class="close-btn" onclick="window.parent.closeLogin()"><i class="fas fa-times-circle"></i></div>
+    </div>
+
+    <div class="wallet-bar">
+        <div class="wallet-label">
+            Main Wallet 
+            <i class="fas fa-sync-alt" id="refreshBtn" style="margin-left: 8px; cursor: pointer;"></i> 
+            <i class="far fa-eye" id="toggleBalance" style="margin-left: 8px; cursor: pointer;"></i>
+        </div>
+        <div class="wallet-amount">৳ <span id="displayBalance">0.00</span></div>
+    </div>
+
+    <div class="section-container">
+        <div class="section-title">Funds</div>
+        <div class="grid-container" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="grid-item" onclick="location.href='deposit.html'">
+                <i class="fas fa-file-import"></i>
+                <span>Deposit</span>
+            </div>
+            <div class="grid-item" onclick="location.href='withdrawal.html'">
+                <i class="fas fa-file-export"></i>
+                <span>Withdrawal</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <div class="section-title">History</div>
+        <div class="grid-container">
+            <div class="grid-item" onclick="location.href='bet-records.html'"><i class="fas fa-history"></i><span>Betting Records</span></div>
+            <div class="grid-item" onclick="location.href='turnover.html'"><i class="fas fa-redo"></i><span>Turnover</span></div>
+            <div class="grid-item" onclick="location.href='transfer-records.html'"><i class="fas fa-exchange-alt"></i><span>Transfer Records</span></div>
+            <div class="grid-item" onclick="location.href='bonus.html'"><i class="fas fa-gift"></i><span>Bonus</span></div>
+            <div class="grid-item" onclick="location.href='transaction.html'"><i class="fas fa-list-alt"></i><span>Transaction</span></div>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <div class="section-title">Profile</div>
+        <div class="grid-container">
+            <div class="grid-item" onclick="location.href='info.html'"><i class="fas fa-user-circle"></i><span>Info</span></div>
+            <div class="grid-item" onclick="location.href='password.html'"><i class="fas fa-key"></i><span>Password</span></div>
+            <div class="grid-item" onclick="location.href='bank.html'"><i class="fas fa-university"></i><span>Bank</span></div>
+            <div class="grid-item" onclick="location.href='messages.html'"><i class="fas fa-envelope"></i><span>Messages</span></div>
+            <div class="grid-item" onclick="location.href='referral.html'"><i class="fas fa-users"></i><span>Referral</span></div>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <div class="section-title">Contact Us</div>
+        <div class="grid-container">
+            <div class="grid-item" onclick="location.href='support.html'"><i class="fas fa-headset"></i><span>Support</span></div>
+            <div class="grid-item" onclick="location.href='whatsapp-link'"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></div>
+            <div class="grid-item" onclick="location.href='telegram-link'"><i class="fab fa-telegram-plane"></i><span>Telegram</span></div>
+            <div class="grid-item" onclick="location.href='facebook-link'"><i class="fab fa-facebook"></i><span>Facebook</span></div>
+        </div>
+    </div>
+
+    <div class="logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-GSBF0PJDx8_AaFD0iyJiZMMsq8ORryE",
+            authDomain: "jaya9-54ae3.firebaseapp.com",
+            databaseURL: "https://jaya9-54ae3-default-rtdb.firebaseio.com",
+            projectId: "jaya9-54ae3",
+            storageBucket: "jaya9-54ae3.firebasestorage.app",
+            messagingSenderId: "645319696874",
+            appId: "1:645319696874:web:a664ff269a999add3d9293",
+            measurementId: "G-QEZETFRFS5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentBalance = "0.00";
+        let isBalanceHidden = false;
+
+        function updateUI(data) {
+            if (data) {
+                currentBalance = data.balance !== undefined ? data.balance : "0.00";
+                document.getElementById('displayUsername').innerText = data.username || "User";
+                document.getElementById('avatarLetter').innerText = (data.username || "U").charAt(0);
+                renderBalance();
+            }
+        }
+
+        function renderBalance() {
+            const balanceEl = document.getElementById('displayBalance');
+            balanceEl.innerText = isBalanceHidden ? "****" : currentBalance;
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const userRef = ref(db, 'users/' + user.uid);
+                onValue(userRef, (snapshot) => {
+                    updateUI(snapshot.val());
+                });
+            } else {
+                window.parent.location.reload();
+            }
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            this.classList.add('rotate-anim');
+            setTimeout(() => this.classList.remove('rotate-anim'), 500);
+            
+            const user = auth.currentUser;
+            if (user) {
+                get(ref(db, 'users/' + user.uid)).then((snapshot) => {
+                    updateUI(snapshot.val());
+                });
+            }
+        });
+
+        document.getElementById('toggleBalance').addEventListener('click', function() {
+            isBalanceHidden = !isBalanceHidden;
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+            renderBalance();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to logout?')) {
+                signOut(auth).then(() => {
+                    window.parent.location.reload();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

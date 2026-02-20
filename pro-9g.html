@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Profile Page Clone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #0b1120;
+            --header-gradient: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            --orange-text: #ff6600;
+            --card-bg: #1f2937;
+            --border-color: #374151;
+            --text-gold: #ffcc00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--primary-bg); padding-bottom: 30px; color: #fff; }
+
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(11, 17, 32, 0.5);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .loader-box {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 102, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(26, 26, 77, 0.3);
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.3);
+            animation: pulse-animation 1.5s ease-in-out infinite;
+        }
+
+        .loader-box img {
+            width: 65px;
+            height: auto;
+            border-radius: 50%;
+        }
+
+        @keyframes pulse-animation {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 102, 0, 0.3); border-color: rgba(255, 102, 0, 0.4); }
+            50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(255, 102, 0, 0.6); border-color: rgba(255, 102, 0, 0.8); }
+        }
+
+        .user-header {
+            background: var(--header-gradient);
+            height: 140px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            color: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .avatar-wrapper { position: relative; margin-right: 15px; }
+        .avatar {
+            width: 70px;
+            height: 70px;
+            background: #ff6600;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            border: 2px solid rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.4);
+        }
+        .vip-badge {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+            color: #000;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 1px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .user-info-text { display: flex; flex-direction: column; gap: 4px; }
+        .username { font-size: 20px; font-weight: 600; color: var(--text-gold); }
+        .user-id { font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 5px; }
+        .copy-icon { cursor: pointer; color: var(--orange-text); font-size: 12px; }
+        
+        .close-btn { position: absolute; top: 15px; right: 15px; font-size: 24px; opacity: 0.8; cursor: pointer; color: #fff; }
+
+        .wallet-bar {
+            background: #111827;
+            margin: -20px 12px 10px 12px;
+            padding: 16px 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            position: relative;
+            z-index: 5;
+        }
+        .wallet-label { color: var(--text-gold); font-size: 14px; font-weight: 600; }
+        .wallet-amount { font-weight: bold; font-size: 18px; color: #fff; }
+
+        .security-card {
+            background: rgba(31, 41, 55, 0.5);
+            margin: 12px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .security-info { font-size: 12px; color: #94a3b8; }
+        .security-bar-bg { width: 100px; height: 6px; background: #0b1120; border-radius: 10px; margin-top: 5px; position: relative; }
+        .security-bar-fill { width: 85%; height: 100%; background: #4ade80; border-radius: 10px; box-shadow: 0 0 8px rgba(74, 222, 128, 0.5); }
+
+        .section-container {
+            background: var(--card-bg);
+            margin: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .section-title {
+            padding: 12px 15px;
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--text-gold);
+            border-left: 4px solid #ff6600;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .funds-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 15px;
+        }
+        .fund-btn {
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .deposit-btn { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; border: 1px solid #22c55e; }
+        .withdraw-btn { background: linear-gradient(135deg, #ea580c, #c2410c); color: #fff; border: 1px solid #f97316; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 15px 5px;
+        }
+        .grid-item {
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        .grid-item i {
+            font-size: 24px;
+            color: #f39c12;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .grid-item span {
+            font-size: 11px;
+            color: #94a3b8;
+            display: block;
+            line-height: 1.2;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: #111827;
+            margin: 20px 12px;
+            padding: 16px;
+            text-align: center;
+            border-radius: 8px;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+
+        .grid-item:active, .fund-btn:active { opacity: 0.6; transform: scale(0.95); transition: 0.1s; }
+        
+        .rotate-anim { animation: rotate 0.5s linear; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="loader-wrapper">
+        <div class="loader-box">
+            <img src="https://i.postimg.cc/G20md6XR/Picsart-26-02-12-18-50-49-888.png" alt="Loading...">
+        </div>
+    </div>
+
+    <div class="user-header">
+        <div class="avatar-wrapper">
+            <div class="avatar" id="avatarLetter">?</div>
+            <div class="vip-badge">VIP 1</div>
+        </div>
+        <div class="user-info-text">
+            <div class="username" id="displayUsername">Loading...</div>
+            <div class="user-id">UID: <span id="userIdDisplay">-------</span> <i class="far fa-copy copy-icon" onclick="copyUID()"></i></div>
+        </div>
+        <div class="close-btn" onclick="if(window.parent.closePopup) { window.parent.closePopup(); } else if(window.parent.closeLogin) { window.parent.closeLogin(); } else { window.history.back(); }"><i class="fas fa-times-circle"></i></div>
+    </div>
+
+    <div class="wallet-bar">
+        <div class="wallet-label">
+            Main Wallet 
+            <i class="fas fa-sync-alt" id="refreshBtn" style="margin-left: 8px; cursor: pointer;"></i> 
+            <i class="far fa-eye" id="toggleBalance" style="margin-left: 8px; cursor: pointer;"></i>
+        </div>
+        <div class="wallet-amount">৳ <span id="displayBalance">0.00</span></div>
+    </div>
+
+    <div class="security-card">
+        <div class="security-info">
+            <div>Security Score: <b>85%</b></div>
+            <div class="security-bar-bg"><div class="security-bar-fill"></div></div>
+        </div>
+        <div style="font-size: 11px; color: #4ade80;"><i class="fas fa-shield-alt"></i> Highly Secure</div>
+    </div>
+
+    <div class="section-container">
+        <div class="section-title">Funds</div>
+        <div class="funds-grid">
+            <div class="fund-btn deposit-btn" onclick="navTo('deposit.html')">
+                <i class="fas fa-plus-circle"></i> Deposit
+            </div>
+            <div class="fund-btn withdraw-btn" onclick="navTo('withdrawal.html')">
+                <i class="fas fa-minus-circle"></i> Withdraw
+            </div>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <div class="section-title">History</div>
+        <div class="grid-container">
+            <div class="grid-item" onclick="navTo('bet-records.html')"><i class="fas fa-history"></i><span>Betting Records</span></div>
+            <div class="grid-item" onclick="navTo('turnover.html')"><i class="fas fa-redo"></i><span>Turnover</span></div>
+            <div class="grid-item" onclick="navTo('transfer-records.html')"><i class="fas fa-exchange-alt"></i><span>Transfer Records</span></div>
+            <div class="grid-item" onclick="navTo('bonus.html')"><i class="fas fa-gift"></i><span>Bonus</span></div>
+            <div class="grid-item" onclick="openTransactionInParent()"><i class="fas fa-list-alt"></i><span>Transaction</span></div>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <div class="section-title">Profile</div>
+        <div class="grid-container">
+            <div class="grid-item" onclick="navTo('personal.html')"><i class="fas fa-user-circle"></i><span>personal info</span></div>
+            <div class="grid-item" onclick="navTo('password.html')"><i class="fas fa-key"></i><span>Password</span></div>
+            <div class="grid-item" onclick="navTo('bank.html')"><i class="fas fa-university"></i><span>Bank</span></div>
+            <div class="grid-item" onclick="navTo('messages.html')"><i class="fas fa-envelope"></i><span>Messages</span></div>
+            <div class="grid-item" onclick="navTo('referral.html')"><i class="fas fa-users"></i><span>Referral</span></div>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <div class="section-title">Contact Us</div>
+        <div class="grid-container">
+            <div class="grid-item" onclick="navTo('support.html')"><i class="fas fa-headset"></i><span>Support</span></div>
+            <div class="grid-item" onclick="navTo('whatsapp-link')"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></div>
+            <div class="grid-item" onclick="navTo('telegram-link')"><i class="fab fa-telegram-plane"></i><span>Telegram</span></div>
+            <div class="grid-item" onclick="navTo('facebook-link')"><i class="fab fa-facebook"></i><span>Facebook</span></div>
+        </div>
+    </div>
+
+    <div class="logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-GSBF0PJDx8_AaFD0iyJiZMMsq8ORryE",
+            authDomain: "jaya9-54ae3.firebaseapp.com",
+            databaseURL: "https://jaya9-54ae3-default-rtdb.firebaseio.com",
+            projectId: "jaya9-54ae3",
+            storageBucket: "jaya9-54ae3.firebasestorage.app",
+            messagingSenderId: "645319696874",
+            appId: "1:645319696874:web:a664ff269a999add3d9293",
+            measurementId: "G-QEZETFRFS5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        function showLoader(callback) {
+            const loader = document.getElementById('loader-wrapper');
+            loader.style.display = 'flex';
+            setTimeout(() => {
+                if(callback) callback();
+            }, 1500);
+        }
+
+        window.navTo = function(url) {
+            showLoader(() => {
+                location.href = url;
+            });
+        };
+
+        window.copyUID = function() {
+            const uid = document.getElementById('userIdDisplay').innerText;
+            navigator.clipboard.writeText(uid).then(() => {
+                alert('UID Copied: ' + uid);
+            });
+        };
+
+        window.openTransactionInParent = function() {
+            if (window.parent && window.parent.openTransaction) {
+                window.parent.openTransaction();
+            } else {
+                window.location.href = 'transaction.html';
+            }
+        };
+
+        let currentBalance = "0.00";
+        let isBalanceHidden = false;
+
+        function updateUI(data, uid) {
+            if (data) {
+                currentBalance = data.balance !== undefined ? data.balance : "0.00";
+                document.getElementById('displayUsername').innerText = data.username || "User";
+                document.getElementById('avatarLetter').innerText = (data.username || "U").charAt(0);
+                document.getElementById('userIdDisplay').innerText = uid.substring(0, 8).toUpperCase();
+                renderBalance();
+            }
+        }
+
+        function renderBalance() {
+            const balanceEl = document.getElementById('displayBalance');
+            balanceEl.innerText = isBalanceHidden ? "****" : currentBalance;
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const userRef = ref(db, 'users/' + user.uid);
+                onValue(userRef, (snapshot) => {
+                    updateUI(snapshot.val(), user.uid);
+                });
+            } else {
+                if (window.parent !== window) {
+                    window.parent.location.href = 'index.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            this.classList.add('rotate-anim');
+            setTimeout(() => this.classList.remove('rotate-anim'), 500);
+            
+            const user = auth.currentUser;
+            if (user) {
+                get(ref(db, 'users/' + user.uid)).then((snapshot) => {
+                    updateUI(snapshot.val(), user.uid);
+                });
+            }
+        });
+
+        document.getElementById('toggleBalance').addEventListener('click', function() {
+            isBalanceHidden = !isBalanceHidden;
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+            renderBalance();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            showLoader(() => {
+                signOut(auth).then(() => {
+                    if (window.parent !== window) {
+                        window.parent.location.reload();
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

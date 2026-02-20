@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Promotions | Bet-Baji</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background: radial-gradient(circle at top, #1a1a4d, #0b1120 70%);
+            color: #fff; 
+            max-width: 100%; 
+            margin: 0 auto; 
+            min-height: 100vh;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        #loader-wrapper {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(11, 17, 32, 0.9);
+            display: none; justify-content: center; align-items: center;
+            z-index: 9999; backdrop-filter: blur(8px);
+        }
+        .loader-box {
+            width: 80px; height: 80px; border-radius: 50%;
+            border: 3px solid #ff6600; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 25px rgba(255, 102, 0, 0.5);
+            animation: pulse 1.2s infinite;
+        }
+        .loader-box img { width: 50px; border-radius: 50%; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+        .tab-container {
+            display: flex;
+            background: #111827;
+            padding: 4px;
+            margin: 10px 5px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+        }
+        .tab {
+            flex: 1; padding: 10px; text-align: center; font-size: 12px;
+            font-weight: bold; border-radius: 8px; cursor: pointer;
+            transition: 0.3s; color: #94a3b8;
+        }
+        .tab.active { background: #ff6600; color: white; box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3); }
+
+        .promo-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            margin: 10px 5px;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            transition: 0.3s;
+        }
+        .promo-card:active { transform: scale(0.97); }
+
+        .fire-icon { position: absolute; top: 12px; right: 12px; color: #ff6600; font-size: 16px; }
+
+        .promo-title { font-size: 14px; font-weight: bold; color: #f8fafc; margin-bottom: 6px; }
+        .promo-expiry { font-size: 10px; color: #94a3b8; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+
+        .detail-btn {
+            background: #334155; border: none; color: #ffcc00;
+            font-size: 9px; padding: 3px 10px; border-radius: 4px; cursor: pointer;
+        }
+
+        .amount { font-size: 20px; font-weight: 900; color: #ffcc00; margin-bottom: 12px; }
+
+        .progress-container { background: #020617; height: 8px; border-radius: 50px; margin-bottom: 6px; overflow: hidden; border: 1px solid #1e293b; }
+        .progress-bar {
+            background: linear-gradient(90deg, #ff6600, #ffcc00);
+            height: 100%; border-radius: 50px;
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+        }
+
+        .progress-labels { display: flex; justify-content: space-between; font-size: 11px; color: #ffcc00; font-weight: bold; }
+
+        @media screen and (max-width: 480px) {
+            body { padding: 8px; }
+            .promo-card { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader-wrapper">
+        <div class="loader-box">
+            <img src="https://i.postimg.cc/G20md6XR/Picsart-26-02-12-18-50-49-888.png" alt="Loading">
+        </div>
+    </div>
+
+    <div class="tab-container">
+        <div class="tab active" onclick="switchTab(this, 'running')">🔄 Running</div>
+        <div class="tab inactive" onclick="switchTab(this, 'completed')">⚽ Completed</div>
+    </div>
+
+    <div id="promo-list">
+        <div class="promo-card">
+            <i class="fas fa-fire fire-icon"></i>
+            <div class="promo-title">First Deposit Bonus</div>
+            <div class="promo-expiry">Ends: 12/31/2026 <button class="detail-btn">Detail</button></div>
+            <div class="amount">৳ 500.00</div>
+            <div class="progress-container"><div class="progress-bar" style="width: 40%;"></div></div>
+            <div class="progress-labels"><span>200.00</span><span>500.00</span></div>
+        </div>
+        <div class="promo-card">
+            <i class="fas fa-fire fire-icon"></i>
+            <div class="promo-title">Weekly Turnover Reward</div>
+            <div class="promo-expiry">Ends: 12/31/2026 <button class="detail-btn">Detail</button></div>
+            <div class="amount">৳ 1,200.00</div>
+            <div class="progress-container"><div class="progress-bar" style="width: 75%;"></div></div>
+            <div class="progress-labels"><span>900.00</span><span>1,200.00</span></div>
+        </div>
+        <div class="promo-card">
+            <i class="fas fa-fire fire-icon"></i>
+            <div class="promo-title">Slots Special Bonus</div>
+            <div class="promo-expiry">Ends: 12/31/2026 <button class="detail-btn">Detail</button></div>
+            <div class="amount">৳ 300.00</div>
+            <div class="progress-container"><div class="progress-bar" style="width: 10%;"></div></div>
+            <div class="progress-labels"><span>30.00</span><span>300.00</span></div>
+        </div>
+        <div class="promo-card">
+            <i class="fas fa-fire fire-icon"></i>
+            <div class="promo-title">Referral Commission</div>
+            <div class="promo-expiry">Ends: 12/31/2026 <button class="detail-btn">Detail</button></div>
+            <div class="amount">৳ 150.00</div>
+            <div class="progress-container"><div class="progress-bar" style="width: 60%;"></div></div>
+            <div class="progress-labels"><span>90.00</span><span>150.00</span></div>
+        </div>
+        <div class="promo-card">
+            <i class="fas fa-fire fire-icon"></i>
+            <div class="promo-title">Daily Rebate</div>
+            <div class="promo-expiry">Ends: 12/31/2026 <button class="detail-btn">Detail</button></div>
+            <div class="amount">৳ 50.00</div>
+            <div class="progress-container"><div class="progress-bar" style="width: 20%;"></div></div>
+            <div class="progress-labels"><span>10.00</span><span>50.00</span></div>
+        </div>
+    </div>
+
+    <script>
+        const runningData = `
+            <div class="promo-card">
+                <i class="fas fa-fire fire-icon"></i>
+                <div class="promo-title">First Deposit Bonus</div>
+                <div class="promo-expiry">Ends: 12/31/2026 <button class="detail-btn">Detail</button></div>
+                <div class="amount">৳ 500.00</div>
+                <div class="progress-container"><div class="progress-bar" style="width: 40%;"></div></div>
+                <div class="progress-labels"><span>200.00</span><span>500.00</span></div>
+            </div>
+            <div class="promo-card">
+                <i class="fas fa-fire fire-icon"></i>
+                <div class="promo-title">Weekly Turnover Reward</div>
+                <div class="promo-expiry">Ends: 12/31/2026 <button class="detail-btn">Detail</button></div>
+                <div class="amount">৳ 1,200.00</div>
+                <div class="progress-container"><div class="progress-bar" style="width: 75%;"></div></div>
+                <div class="progress-labels"><span>900.00</span><span>1,200.00</span></div>
+            </div>
+            <div class="promo-card">
+                <i class="fas fa-fire fire-icon"></i>
+                <div class="promo-title">Slots Special Bonus</div>
+                <div class="promo-expiry">Ends: 12/31/2026 <button class="detail-btn">Detail</button></div>
+                <div class="amount">৳ 300.00</div>
+                <div class="progress-container"><div class="progress-bar" style="width: 10%;"></div></div>
+                <div class="progress-labels"><span>30.00</span><span>300.00</span></div>
+            </div>
+            <div class="promo-card">
+                <i class="fas fa-fire fire-icon"></i>
+                <div class="promo-title">Referral Commission</div>
+                <div class="promo-expiry">Ends: 12/31/2026 <button class="detail-btn">Detail</button></div>
+                <div class="amount">৳ 150.00</div>
+                <div class="progress-container"><div class="progress-bar" style="width: 60%;"></div></div>
+                <div class="progress-labels"><span>90.00</span><span>150.00</span></div>
+            </div>
+            <div class="promo-card">
+                <i class="fas fa-fire fire-icon"></i>
+                <div class="promo-title">Daily Rebate</div>
+                <div class="promo-expiry">Ends: 12/31/2026 <button class="detail-btn">Detail</button></div>
+                <div class="amount">৳ 50.00</div>
+                <div class="progress-container"><div class="progress-bar" style="width: 20%;"></div></div>
+                <div class="progress-labels"><span>10.00</span><span>50.00</span></div>
+            </div>`;
+
+        const completedData = `
+            <div class="promo-card">
+                <i class="fas fa-fire fire-icon"></i>
+                <div class="promo-title">Commission Withdrawal</div>
+                <div class="promo-expiry">Completed <button class="detail-btn">Detail</button></div>
+                <div class="amount">৳ 12.37</div>
+                <div class="progress-container"><div class="progress-bar" style="width: 100%;"></div></div>
+                <div class="progress-labels"><span>12.37</span><span>12.37</span></div>
+            </div>
+            <div class="promo-card">
+                <i class="fas fa-fire fire-icon"></i>
+                <div class="promo-title">Commission Withdrawal</div>
+                <div class="promo-expiry">Completed <button class="detail-btn">Detail</button></div>
+                <div class="amount">৳ 44.37</div>
+                <div class="progress-container"><div class="progress-bar" style="width: 100%;"></div></div>
+                <div class="progress-labels"><span>44.37</span><span>44.37</span></div>
+            </div>
+            <div class="promo-card">
+                <i class="fas fa-fire fire-icon"></i>
+                <div class="promo-title">3.00% Deposit Bonus</div>
+                <div class="promo-expiry">Completed <button class="detail-btn">Detail</button></div>
+                <div class="amount">৳ 18.00</div>
+                <div class="progress-container"><div class="progress-bar" style="width: 100%;"></div></div>
+                <div class="progress-labels"><span>18.00</span><span>18.00</span></div>
+            </div>
+            <div class="promo-card">
+                <i class="fas fa-fire fire-icon"></i>
+                <div class="promo-title">VIP Monthly Bonus</div>
+                <div class="promo-expiry">Completed <button class="detail-btn">Detail</button></div>
+                <div class="amount">৳ 1,000.00</div>
+                <div class="progress-container"><div class="progress-bar" style="width: 100%;"></div></div>
+                <div class="progress-labels"><span>1,000.00</span><span>1,000.00</span></div>
+            </div>
+            <div class="promo-card">
+                <i class="fas fa-fire fire-icon"></i>
+                <div class="promo-title">Birthday Reward</div>
+                <div class="promo-expiry">Completed <button class="detail-btn">Detail</button></div>
+                <div class="amount">৳ 500.00</div>
+                <div class="progress-container"><div class="progress-bar" style="width: 100%;"></div></div>
+                <div class="progress-labels"><span>500.00</span><span>500.00</span></div>
+            </div>`;
+
+        function switchTab(element, type) {
+            const loader = document.getElementById('loader-wrapper');
+            const promoList = document.getElementById('promo-list');
+            loader.style.display = 'flex';
+
+            setTimeout(() => {
+                document.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('active');
+                    t.classList.add('inactive');
+                });
+                element.classList.add('active');
+                element.classList.remove('inactive');
+
+                if (type === 'running') {
+                    promoList.innerHTML = runningData;
+                } else {
+                    promoList.innerHTML = completedData;
+                }
+
+                loader.style.display = 'none';
+            }, 800);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Add New Number</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #111827;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .modal-box {
+            background: #111827;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: none;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(1); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            color: #ffcc00;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            border-bottom: 1px solid #1e293b;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .modal-header span {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .close-circle {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .close-circle:active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .close-btn {
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        .modal-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .notice-box {
+            background-color: rgba(255, 102, 0, 0.1);
+            border-left: 3px solid #ff6600;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .notice-text {
+            color: #ffcc00;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .input-label span {
+            color: #ff6600;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            outline: none;
+            font-size: 16px;
+            background-color: #1f2937;
+            color: #ffcc00;
+        }
+
+        .input-field::placeholder {
+            color: #4b5563;
+        }
+
+        .error-text {
+            color: #ff6600;
+            font-size: 10px;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+            margin-top: 10px;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+            background-color: #e65c00;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-box">
+        <div class="modal-header">
+            <span>Add New Number</span>
+            <div class="close-circle" onclick="handleClose()">
+                <div class="close-btn">✕</div>
+            </div>
+        </div>
+        <div class="modal-body">
+            
+            <div class="notice-box">
+                <p class="notice-text">⚠️ বিশেষ সতর্কবার্তা: একবার একটি নম্বর যুক্ত করলে তা আর পরিবর্তন বা ডিলিট করা যাবে না।</p>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Phone Number <span>*</span></label>
+                <input type="text" class="input-field" value="+880">
+                <p class="error-text">This is a mandatory field</p>
+            </div>
+
+            <button class="submit-btn" onclick="handleSubmit()">Submit</button>
+
+        </div>
+    </div>
+
+    <script>
+        function handleClose() {
+            if(window.parent && window.parent.closeAddNumberModal) {
+                window.parent.closeAddNumberModal();
+            } else if (window.parent && window.parent.closeLogin) {
+                window.parent.closeLogin();
+            } else {
+                window.top.location.href = "personal.html";
+            }
+        }
+
+        function handleSubmit() {
+            alert("Submitting...");
+        }
+
+        window.history.pushState(null, null, window.location.href);
+        window.onpopstate = function () {
+            handleClose();
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bet-Baji | Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background-color: #0b1120; 
+            color: #fff; 
+            transition: filter 0.3s ease;
+            overflow-x: hidden; 
+        }
+
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(11, 17, 32, 0.5);
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .loader-box {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 102, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(26, 26, 77, 0.3);
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.3);
+            animation: pulse-animation 1.5s ease-in-out infinite;
+        }
+
+        .loader-box img {
+            width: 65px;
+            height: auto;
+            border-radius: 50%;
+            opacity: 1 !important;
+            filter: none !important;
+        }
+
+        @keyframes pulse-animation {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 102, 0, 0.3); border-color: rgba(255, 102, 0, 0.4); }
+            50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(255, 102, 0, 0.6); border-color: rgba(255, 102, 0, 0.8); }
+        }
+
+        .loader-hidden { opacity: 0; visibility: hidden; }
+
+        .blur-active #main-content {
+            filter: blur(4px);
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        #side-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: -100%; 
+            width: 60%; 
+            max-width: 260px; 
+            height: 100%;
+            background: #111827;
+            z-index: 3000;
+            transition: left 0.4s ease;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+        }
+        #side-modal.open {
+            display: block;
+            left: 0;
+        }
+        #side-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        #side-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); 
+            z-index: 2999;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+        }
+
+        header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2d3748;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo { font-weight: bold; font-size: 22px; color: #ffcc00; font-style: italic; letter-spacing: 1px; }
+
+        .banner {
+            width: 95%;
+            height: 140px;
+            margin: 10px auto;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #1a1a4d, #000);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: gold;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
+
+        .scrolling-news {
+            background: #1e293b;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 5px;
+        }
+        .scrolling-news i { color: #ffcc00; margin-right: 8px; font-size: 16px; }
+        .news-ticker { width: 100%; overflow: hidden; white-space: nowrap; }
+        .news-ticker p {
+            display: inline-block;
+            padding-left: 100%;
+            animation: scroll-text 15s linear infinite;
+            color: #e2e8f0;
+            font-size: 13px;
+        }
+        @keyframes scroll-text {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        .game-nav {
+            display: flex;
+            overflow-x: auto;
+            background: #111827;
+            padding: 10px 5px;
+            white-space: nowrap;
+            gap: 8px;
+            scrollbar-width: none;
+        }
+        .game-nav::-webkit-scrollbar { display: none; } 
+        .nav-item {
+            min-width: 70px;
+            text-align: center;
+            font-size: 11px;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 8px 4px;
+            border-radius: 10px;
+            transition: 0.2s ease; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; color: #f39c12; }
+        .nav-item.active { background-color: #ff6600; color: #fff; box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3); }
+        .nav-item.active i { color: #fff; }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 10px;
+        }
+        .game-card {
+            background: #1f2937;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #374151;
+            transition: 0.2s;
+        }
+        .game-card:active { transform: scale(0.96); }
+        .game-card img { width: 100%; display: block; height: 100px; object-fit: cover; }
+        .hot-tag {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: linear-gradient(to right, #ff0000, #ff6600);
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            z-index: 1;
+        }
+
+        .info-section {
+            padding: 20px 15px;
+            background: #0b1120;
+            color: #94a3b8;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 60px;
+            border-top: 1px solid #1e293b;
+        }
+        .info-title { color: #ffcc00; font-weight: bold; margin-bottom: 8px; font-size: 13px; text-transform: uppercase; }
+        .support-btn {
+            background: #ff6600;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 12px;
+            text-align: center;
+        }
+        .social-icons { display: flex; gap: 20px; margin: 15px 0; font-size: 22px; color: #fff; }
+        .footer-links { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px; border-top: 1px solid #1e293b; padding-top: 15px; }
+        .footer-links span { color: #fff; font-weight: 500; font-size: 11px; }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #111827;
+            display: none; 
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #1e293b;
+            z-index: 1000;
+        }
+        .footer-item { text-align: center; font-size: 10px; color: #94a3b8; cursor: pointer; flex: 1; -webkit-tap-highlight-color: transparent; }
+        .footer-item i { font-size: 18px; display: block; margin-bottom: 3px; }
+        .footer-item.active { color: #ffcc00; }
+        .auth-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            display: flex;
+            z-index: 1001;
+        }
+        .auth-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 15px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .login-btn { background-color: #1a1a4d; color: white; }
+        .signup-btn { background-color: #ff6600; color: white; }
+
+        #login-modal {
+            display: none;
+            position: fixed;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 17, 32, 0.4); 
+            z-index: 2000;
+            transition: top 0.5s ease;
+        }
+        #login-modal.show {
+            display: block;
+            top: 0;
+        }
+        #login-modal iframe { width: 100%; height: 100%; border: none; background: transparent; }
+
+        #transaction-view {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 50px);
+            z-index: 500;
+            background: #0b1120;
+        }
+        #transaction-view iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <div id="loader-wrapper">
+        <div class="loader-box">
+            <img src="https://i.postimg.cc/G20md6XR/Picsart-26-02-12-18-50-49-888.png" alt="Loading...">
+        </div>
+    </div>
+
+    <div id="side-overlay" onclick="closeSideMenu()"></div>
+    <div id="side-modal">
+        <iframe src="side.html" id="side-frame"></iframe>
+    </div>
+
+    <div id="login-modal">
+        <iframe src="login.html" id="login-frame"></iframe>
+    </div>
+
+    <div id="transaction-view">
+        <iframe id="transaction-frame" src=""></iframe>
+    </div>
+
+    <div id="main-content">
+        <header>
+            <i class="fas fa-bars" onclick="toggleMenu()" style="font-size: 20px; cursor: pointer;"></i>
+            <div class="logo">BET-BAJI</div>
+            <div>
+                <i class="fas fa-download" style="margin-right:15px; color: #ffcc00; font-size: 18px;"></i>
+                <i class="fas fa-comment-dots" style="font-size: 18px;"></i>
+            </div>
+        </header>
+
+        <div id="home-body-content">
+            <div class="banner">
+                <div>
+                    <h2 style="font-size: 16px;">SLOT TOURNAMENT</h2>
+                    <p style="font-size: 20px; font-weight: bold;">৳ 9,99,999</p>
+                </div>
+            </div>
+
+            <div class="scrolling-news">
+                <i class="fas fa-bullhorn"></i>
+                <div class="news-ticker">
+                    <p>আপনি এখানে ডিপোজিট করে ইনাকম করতে পারবেন আমাদের এখানে অনেক গেম আছে যাতে আপনার ইনকাম নিশ্চিত। নতুন অফারে আজই জয়ী হোন!</p>
+                </div>
+            </div>
+
+            <div class="game-nav">
+                <div class="nav-item active" onclick="filterGame('hot')">
+                    <i class="fas fa-fire"></i> <span>Hot</span>
+                </div>
+                <div class="nav-item" onclick="filterGame('cricket')">
+                    <i class="fas fa-baseball-bat-ball"></i> <span>Cricket</span>
+                </div>
+                <div class="nav-item" onclick="filterGame('casino')">
+                    <i class="fas fa-spade"></i> <span>Casino</span>
+                </div>
+                <div class="nav-item" onclick="filterGame('slot')">
+                    <i class="fas fa-dice"></i> <span>Slot</span>
+                </div>
+                <div class="nav-item" onclick="filterGame('table')">
+                    <i class="fas fa-table-cells"></i> <span>Table</span>
+                </div>
+            </div>
+
+            <div class="game-container">
+                <div class="game-card">
+                    <span class="hot-tag">HOT</span>
+                    <img src="https://via.placeholder.com/150/ff007f/ffffff?text=Sexy+Casino" alt="Game">
+                </div>
+                <div class="game-card">
+                    <span class="hot-tag">HOT</span>
+                    <img src="https://via.placeholder.com/150/800000/ffffff?text=Aviator" alt="Game">
+                </div>
+                <div class="game-card">
+                    <span class="hot-tag">HOT</span>
+                    <img src="https://via.placeholder.com/150/008000/ffffff?text=Money+Coming" alt="Game">
+                </div>
+                <div class="game-card">
+                    <span class="hot-tag">HOT</span>
+                    <img src="https://via.placeholder.com/150/ffd700/000000?text=Super+Ace" alt="Game">
+                </div>
+                <div class="game-card">
+                    <span class="hot-tag">HOT</span>
+                    <img src="https://via.placeholder.com/150/0000ff/ffffff?text=Mega+Wheel" alt="Game">
+                </div>
+                <div class="game-card">
+                    <span class="hot-tag">HOT</span>
+                    <img src="https://via.placeholder.com/150/4b0082/ffffff?text=Funky+Time" alt="Game">
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-title">Payment Methods</div>
+                <div style="font-size: 22px; color: #fff; margin-bottom: 15px;">
+                    <i class="fas fa-wallet" style="margin-right: 12px;"></i>
+                    <i class="fas fa-university"></i>
+                </div>
+
+                <div class="info-title">Customer Support</div>
+                <a href="#" class="support-btn"><i class="fas fa-comments"></i> Chat Now</a>
+
+                <div class="social-icons">
+                    <i class="fab fa-facebook"></i>
+                    <i class="fab fa-telegram"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+
+                <div class="footer-links">
+                    <span>Responsible Gaming</span>
+                    <span>Terms And Condition</span>
+                    <span>About us</span>
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <h3 style="color: #ffcc00; font-size: 14px; margin-bottom: 10px;">Trusted Best Online Cricket Exchange, Betting Sites in Bangladesh and South Asia</h3>
+                    <p style="margin-bottom: 15px; text-align: justify;">BET-BAJI is one of the most famous online betting sites on the Internet for online cricket betting, live cricket betting, live casinos, soccer, slot games and table games. It focuses on a wide range of sports for online betting like others, but the best thing about BET-BAJI is once the match starts, you can place in-play bets during the match.</p>
+                    <p style="margin-bottom: 15px; text-align: justify;">BET-BAJI offers multiple currencies for all countries. Now players from Bangladesh can enjoy betting with local payment BDT. When you enter BET-BAJI online betting site, you’ll get to know all about BET-BAJI and how it's simple to place a wager on BET-BAJI, just simply click on that sport match that is in your favour. BET-BAJI makes it easy for players to deposit using various payment methods with fast and secure transactions.</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px; font-size: 10px;">
+                    Copyright © 2026 BET-BAJI. All rights are reserved.
+                </div>
+            </div>
+        </div>
+
+        <footer id="main-footer">
+            <div class="footer-item active" onclick="goHome()">
+                <i class="fas fa-home"></i> Home
+            </div>
+            <div class="footer-item" onclick="openPromo()">
+                <i class="fas fa-percentage"></i> Promo
+            </div>
+            <div class="footer-item" onclick="openDeposit()">
+                <i class="fas fa-wallet" style="color: #00ff00;"></i> Deposit
+            </div>
+            <div class="footer-item" onclick="openProfile()">
+                <i class="fas fa-user"></i> Profile
+            </div>
+        </footer>
+    </div> 
+
+    <div class="auth-bar">
+        <div class="auth-btn login-btn" onclick="openLogin()">Login</div>
+        <div class="auth-btn signup-btn" onclick="openSignup()">Sign Up</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-GSBF0PJDx8_AaFD0iyJiZMMsq8ORryE",
+            authDomain: "jaya9-54ae3.firebaseapp.com",
+            databaseURL: "https://jaya9-54ae3-default-rtdb.firebaseio.com",
+            projectId: "jaya9-54ae3",
+            storageBucket: "jaya9-54ae3.firebasestorage.app",
+            messagingSenderId: "645319696874",
+            appId: "1:645319696874:web:a664ff269a999add3d9293",
+            measurementId: "G-QEZETFRFS5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        window.auth = auth;
+
+        function hideInitialLoader() {
+            const loader = document.getElementById('loader-wrapper');
+            loader.classList.add('loader-hidden');
+            setTimeout(() => {
+                loader.style.display = 'none';
+                document.body.classList.remove('blur-active');
+            }, 500);
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.querySelector('.auth-bar').style.display = 'none';
+                document.getElementById('main-footer').style.display = 'flex';
+            } else {
+                document.querySelector('.auth-bar').style.display = 'flex';
+                document.getElementById('main-footer').style.display = 'none';
+            }
+            hideInitialLoader();
+        });
+
+        window.onLoginSuccess = function() {
+            closeLogin();
+        };
+    </script>
+
+    <script>
+        function toggleMenu() {
+            const sideModal = document.getElementById('side-modal');
+            const overlay = document.getElementById('side-overlay');
+            sideModal.style.display = 'block';
+            setTimeout(() => {
+                sideModal.classList.add('open');
+                overlay.style.display = 'block';
+                document.body.classList.add('blur-active');
+                document.body.style.overflow = 'hidden';
+            }, 10);
+        }
+
+        function closeSideMenu() {
+            const sideModal = document.getElementById('side-modal');
+            const overlay = document.getElementById('side-overlay');
+            sideModal.classList.remove('open');
+            overlay.style.display = 'none';
+            document.body.classList.remove('blur-active');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => {
+                sideModal.style.display = 'none';
+            }, 400);
+        }
+
+        function showLoader(callback) {
+            const loader = document.getElementById('loader-wrapper');
+            document.body.classList.add('blur-active'); 
+            loader.style.display = 'flex';
+            loader.classList.remove('loader-hidden');
+            
+            setTimeout(() => {
+                loader.classList.add('loader-hidden');
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    if(callback) callback();
+                }, 500);
+            }, 1000);
+        }
+
+        function goHome() {
+            document.getElementById('transaction-view').style.display = 'none';
+            document.getElementById('home-body-content').style.display = 'block';
+            document.querySelectorAll('.footer-item').forEach(i => i.classList.remove('active'));
+            document.querySelector('.footer-item:first-child').classList.add('active');
+            closeLogin();
+        }
+
+        window.openTransaction = function() {
+            showLoader(() => {
+                document.getElementById('home-body-content').style.display = 'none';
+                document.getElementById('transaction-view').style.display = 'block';
+                document.getElementById('transaction-frame').src = 'transaction.html';
+                closeLogin();
+                document.querySelectorAll('.footer-item').forEach(i => i.classList.remove('active'));
+            });
+        }
+
+        function openProfile() {
+            const modal = document.getElementById('login-modal');
+            modal.classList.remove('show');
+            showLoader(() => {
+                document.getElementById('login-frame').contentWindow.location.replace('pro-9.html');
+                modal.style.display = 'block';
+                setTimeout(() => { modal.classList.add('show'); }, 10);
+                document.body.classList.add('blur-active'); 
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        function openDeposit() {
+            const modal = document.getElementById('login-modal');
+            modal.classList.remove('show');
+            showLoader(() => {
+                document.getElementById('login-frame').contentWindow.location.replace('deposit.html');
+                modal.style.display = 'block';
+                setTimeout(() => { modal.classList.add('show'); }, 10);
+                document.body.classList.add('blur-active');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        function openPromo() {
+            const modal = document.getElementById('login-modal');
+            modal.classList.remove('show');
+            showLoader(() => {
+                document.getElementById('login-frame').contentWindow.location.replace('promo.html');
+                modal.style.display = 'block';
+                setTimeout(() => { modal.classList.add('show'); }, 10);
+                document.body.classList.add('blur-active');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        function openLogin() {
+            showLoader(() => {
+                const modal = document.getElementById('login-modal');
+                document.getElementById('login-frame').contentWindow.location.replace('login.html');
+                modal.style.display = 'block';
+                setTimeout(() => { modal.classList.add('show'); }, 10);
+                document.body.classList.add('blur-active'); 
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        function openSignup() {
+            showLoader(() => {
+                const modal = document.getElementById('login-modal');
+                document.getElementById('login-frame').contentWindow.location.replace('singup.html');
+                modal.style.display = 'block';
+                setTimeout(() => { modal.classList.add('show'); }, 10);
+                document.body.classList.add('blur-active'); 
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        function closeLogin() {
+            const modal = document.getElementById('login-modal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.classList.remove('blur-active'); 
+                document.body.style.overflow = 'auto';
+            }, 500);
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const currentActive = document.querySelector('.nav-item.active');
+                if (currentActive) { currentActive.classList.remove('active'); }
+                this.classList.add('active');
+            });
+        });
+
+        function filterGame(type) { console.log("Filtering for: " + type); }
+    </script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { 
+            background-color: transparent; 
+            color: #fff; 
+            overflow: hidden; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .modal-box {
+            width: 100%;
+            height: 100%;
+            background: #0b1120;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #334155;
+        }
+
+        .modal-header {
+            background: linear-gradient(180deg, #1a1a4d 0%, #0b1120 100%);
+            color: #ffcc00;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            border-bottom: 1px solid #2d3748;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .modal-header i {
+            position: absolute;
+            right: 15px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .modal-body {
+            padding: 20px 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 10px;
+        }
+
+        .data-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .label {
+            color: #94a3b8;
+        }
+
+        .value {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            background: linear-gradient(180deg, #ff8c00 0%, #ff6600 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            transition: 0.2s;
+            height: 48px;
+        }
+
+        .confirm-btn:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
+        /* ৯ নম্বর ডাবল সার্কেল লোডার */
+        .loader-9 {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: #ffcc00;
+            position: relative;
+            animation: rotation 1s linear infinite;
+        }
+
+        .loader-9:before {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            right: 3px;
+            bottom: 3px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: #ffffff;
+            animation: rotation 0.5s linear infinite reverse;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .confirm-btn:active {
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-box">
+        <div class="modal-header">
+            <span>Deposit Details</span>
+            <i class="fas fa-times" onclick="closePopup()"></i>
+        </div>
+        <div class="modal-body">
+            <div class="info-section">
+                <div class="data-row">
+                    <span class="label">Amount</span>
+                    <span class="value" id="popAmount">৳ 0.00</span>
+                </div>
+                <div class="data-row">
+                    <span class="label">Bonus</span>
+                    <span class="value" id="popBonus">৳ 0.00</span>
+                </div>
+                <div class="data-row">
+                    <span class="label">Turnover</span>
+                    <span class="value" id="popTurnover">৳ 0.00</span>
+                </div>
+            </div>
+            
+            <button id="confirmBtn" onclick="processPayment()" class="confirm-btn">
+                <div class="loader-9" id="btnLoader"></div>
+                <span id="btnText">Confirm</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            closePopup();
+        };
+
+        window.onload = function() {
+            if (window.parent) {
+                const parentInput = window.parent.document.getElementById('depositAmount');
+                const parentBonus = window.parent.document.querySelector('select');
+                
+                if(parentInput && parentBonus) {
+                    let rawAmount = parentInput.value.replace(/[^\d.]/g, '');
+                    let amount = parseFloat(rawAmount) || 0;
+                    
+                    let bonusPercent = 0;
+                    if (parentBonus.value.includes('100%')) bonusPercent = 1;
+                    else if (parentBonus.value.includes('10%')) bonusPercent = 0.1;
+
+                    let bonusAmount = amount * bonusPercent;
+                    let totalTurnover = amount + bonusAmount;
+
+                    document.getElementById('popAmount').innerText = "৳ " + amount.toLocaleString(undefined, {minimumFractionDigits: 2});
+                    document.getElementById('popBonus').innerText = "৳ " + bonusAmount.toLocaleString(undefined, {minimumFractionDigits: 2});
+                    document.getElementById('popTurnover').innerText = "৳ " + totalTurnover.toLocaleString(undefined, {minimumFractionDigits: 2});
+                }
+            }
+        };
+
+        function processPayment() {
+            const btn = document.getElementById('confirmBtn');
+            const loader = document.getElementById('btnLoader');
+            const btnText = document.getElementById('btnText');
+
+            btn.disabled = true;
+            loader.style.display = 'block';
+            btnText.innerText = 'Processing...';
+
+            setTimeout(() => {
+                if (window.parent) {
+                    window.parent.location.href = 'payment.html';
+                    if (window.parent.document.getElementById('iframeModal')) {
+                        window.parent.document.getElementById('iframeModal').style.display = 'none';
+                        window.parent.document.body.classList.remove('modal-open');
+                    }
+                } else {
+                    window.location.href = 'payment.html';
+                }
+            }, 1500);
+        }
+
+        function closePopup() {
+            if (window.parent && window.parent.document.getElementById('iframeModal')) {
+                window.parent.document.getElementById('iframeModal').style.display = 'none';
+                window.parent.document.getElementById('popFrame').src = '';
+                window.parent.document.body.classList.remove('modal-open');
+            }
+        }
+    </script>
+</body>
+</html>
